@@ -3,6 +3,9 @@ import { useStyletron } from 'baseui';
 import { useAtom } from 'jotai';
 import { activeTitle } from '@/features/listing/atoms/active-title.ts';
 import { MovieInfo } from '@/features/addon/service/Addon.tsx';
+import { Button } from 'baseui/button';
+import { PlayIcon } from 'lucide-react';
+import { videoInfoDialog } from '@/features/listing/atoms/video-info-dialog.ts';
 
 const SimpleMovieCard = forwardRef<
   HTMLDivElement,
@@ -67,9 +70,21 @@ const SimpleMovieCard = forwardRef<
     },
   });
 
+  const [, setValue] = useAtom(videoInfoDialog);
+
   return (
     <div
       ref={ref}
+      onKeyUp={(ev) => {
+        if (ev.key === 'Enter') {
+          setValue(data);
+        }
+      }}
+      onClick={() => {
+        if (isActive) {
+          setValue(data);
+        }
+      }}
       className={css({
         position: 'relative',
         flexShrink: 0,
@@ -107,8 +122,27 @@ const SimpleMovieCard = forwardRef<
         })}
         tabIndex={0}
       >
+        <div
+          className={css({
+            opacity: isActive ? 1 : 0,
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            right: 0,
+            left: 0,
+            zIndex: 10,
+            display: 'flex',
+            alignItems: 'center',
+            placeContent: 'center',
+          })}
+        >
+          <Button kind="secondary" shape="circle">
+            <PlayIcon />
+          </Button>
+        </div>
         {!imageLoaded && !isImageError && <div className={shimmerStyles} />}
         <img
+          draggable={false}
           src={posterUrl}
           alt={data.name}
           className={css({

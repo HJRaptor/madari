@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { HomeIcon, User2Icon, VideoIcon, VideotapeIcon } from 'lucide-react';
+import { HomeIcon, SettingsIcon, VideoIcon, VideotapeIcon } from 'lucide-react';
 
 export const NavigationRouteData: {
   title: React.ReactNode;
@@ -8,23 +8,23 @@ export const NavigationRouteData: {
   icon?: React.ReactNode;
 }[] = [
   {
-    key: 'home',
+    key: '/',
     title: <FormattedMessage defaultMessage="Home" />,
     icon: <HomeIcon />,
   },
   {
-    key: 'movies',
+    key: '/movies',
     icon: <VideoIcon />,
     title: <FormattedMessage defaultMessage="Movies" />,
   },
   {
-    key: 'shows',
+    key: '/shows',
     icon: <VideotapeIcon />,
     title: <FormattedMessage defaultMessage="Shows" />,
   },
   {
-    icon: <User2Icon />,
-    key: 'my-account',
-    title: <FormattedMessage defaultMessage="My Account" />,
+    icon: <SettingsIcon />,
+    key: '/settings',
+    title: <FormattedMessage defaultMessage="Settings" />,
   },
 ];

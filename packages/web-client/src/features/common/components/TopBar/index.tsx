@@ -5,6 +5,7 @@ import { ButtonGroup } from 'baseui/button-group';
 import { Search } from 'baseui/icon';
 import SearchBox from '@/features/common/components/SearchBox';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export default function TopBar() {
   const [css] = useStyletron();
@@ -20,6 +21,10 @@ export default function TopBar() {
   useLayoutEffect(() => {
     buttonRefs.current[0]?.focus();
   }, []);
+
+  const navigate = useNavigate();
+
+  const location = useLocation();
 
   return (
     <>
@@ -62,6 +67,10 @@ export default function TopBar() {
           <ButtonGroup shape="pill" kind="secondary">
             {NavigationRouteData.map((item, index) => (
               <Button
+                onClick={() => {
+                  navigate(item.key);
+                }}
+                isSelected={location.pathname === item.key}
                 startEnhancer={item.icon}
                 key={item.key}
                 ref={(el: never) => (buttonRefs.current[index + 1] = el)}

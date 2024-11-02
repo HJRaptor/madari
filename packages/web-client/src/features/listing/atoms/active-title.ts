@@ -25,7 +25,7 @@ export const activeTitle = withAtomEffect(
         isPlaying: true,
         playerKind: 'mini',
         videoUrl: `youtube/${val.data.trailers?.[0].source}`,
-        posterImage: val.data.poster,
+        posterImage: val.data.background,
         type: 'movie',
         title: val.data.name,
       });

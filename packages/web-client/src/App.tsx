@@ -5,9 +5,28 @@ import HorizontalWindowList from '@/features/listing/components/ShowListContaine
 import { AddonContext } from '@/features/addon/providers/AddonContext.ts';
 import { useAtom } from 'jotai/index';
 import { tileViewAtom } from '@/features/listing/atoms/tiles-view.ts';
+import { activeTitle } from '@/features/listing/atoms/active-title.ts';
+import { videoInfoDialog } from '@/features/listing/atoms/video-info-dialog.ts';
 
 function App() {
   const [css, $theme] = useStyletron();
+
+  const [active] = useAtom(activeTitle);
+  const [, setValue] = useAtom(videoInfoDialog);
+
+  useEffect(() => {
+    const keyUp = (ev: KeyboardEvent) => {
+      if (ev.key === 'Enter' && active) {
+        ev.preventDefault();
+        setValue(active.data);
+      }
+    };
+
+    document.addEventListener('keyup', keyUp);
+    return () => {
+      document.removeEventListener('keyup', keyUp);
+    };
+  }, [active, setValue]);
 
   useEffect(() => {
     const classForBody = css({
@@ -32,7 +51,7 @@ function App() {
 
   return (
     <div
-      onMouseMove={() => {
+      onWheel={() => {
         if (view === 'hidden') {
           setView('medium');
         }

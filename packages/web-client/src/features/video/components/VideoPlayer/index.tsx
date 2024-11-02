@@ -3,6 +3,7 @@ import {
   MediaPlayer,
   MediaPlayerInstance,
   MediaProvider,
+  Poster,
 } from '@vidstack/react';
 import { useStyletron } from 'baseui';
 import { videoStateAtom } from '@/features/video/atom/video-state.ts';
@@ -11,6 +12,7 @@ import { useAtom } from 'jotai/index';
 import '@vidstack/react/player/styles/default/theme.css';
 import '@vidstack/react/player/styles/default/layouts/audio.css';
 import '@vidstack/react/player/styles/default/layouts/video.css';
+import '@vidstack/react/player/styles/default/poster.css';
 import {
   defaultLayoutIcons,
   DefaultVideoLayout,
@@ -89,7 +91,9 @@ export function VideoPlayer() {
         title={videoState.title}
         src={videoState.videoUrl}
       >
-        <MediaProvider />
+        <MediaProvider>
+          <Poster src={videoState.posterImage} className="vds-poster" />
+        </MediaProvider>
         {videoState.playerKind === 'full' ? (
           <DefaultVideoLayout icons={defaultLayoutIcons} />
         ) : (

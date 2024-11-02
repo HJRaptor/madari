@@ -13,7 +13,6 @@ import { Provider as JotaiProvider } from 'jotai';
 import AppSkeleton from '@/features/common/components/Loader';
 import { RouterProvider } from 'react-router-dom';
 import { router } from '@/router.tsx';
-import { VideoPlayer } from '@/features/video/components/VideoPlayer';
 
 const root = document.getElementById('root');
 
@@ -40,15 +39,9 @@ if (root) {
           >
             <QueryClientProvider client={queryClient}>
               <Suspense fallback={<AppSkeleton />}>
-                <AddonProviders
-                  addons={[
-                    'https://v3-cinemeta.strem.io/manifest.json',
-                    'https://7a82163c306e-stremio-netflix-catalog-addon.baby-beamup.club/ZG5wLGFtcCxhdHAsaGJtLG5meCxjcnUsaHN0LHplZSxkcGUsY3RzOjppbjoxNzI3MzgyNzI4OTMx/manifest.json',
-                  ]}
-                >
+                <AddonProviders>
                   <JotaiProvider>
                     <RouterProvider router={router} />
-                    <VideoPlayer />
                   </JotaiProvider>
                 </AddonProviders>
               </Suspense>

@@ -238,7 +238,7 @@ const VerticalWindowList: React.FC<VerticalWindowListProps> = ({
     switch (tileView) {
       case 'hidden':
         return {
-          transform: 'translateY(100vh)',
+          transform: 'translateY(calc(100vh - 420px))',
         };
       case 'medium':
         return {
@@ -256,6 +256,8 @@ const VerticalWindowList: React.FC<VerticalWindowListProps> = ({
     };
   }, [tileView]);
 
+  const [view, setView] = useAtom(tileViewAtom);
+
   // Don't render until we have dimensions
   if (dimensions.width === 0 || dimensions.height === 0) {
     return <Container ref={containerRef} />;
@@ -266,6 +268,11 @@ const VerticalWindowList: React.FC<VerticalWindowListProps> = ({
       data-testid="show-list-container"
       onBlur={() => {
         setAtom(undefined);
+      }}
+      onWheel={() => {
+        if (view === 'hidden') {
+          setView('medium');
+        }
       }}
       data-card-type="main-list-wrapper"
       className={css({

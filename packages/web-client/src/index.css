@@ -4,8 +4,17 @@ html {
     padding: 0;
 }
 
+body {
+    min-height: 100vh;
+}
+
+.vds-poster {
+    object-fit: contain;
+}
+
 #root {
     height: 100%;
+    display: block;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
