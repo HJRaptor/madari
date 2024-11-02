@@ -355,6 +355,7 @@ const MovieCardLarge = forwardRef<
           index: _props.index,
           categoryId: _props.listId,
           id: _props.data.id,
+          data: _props.data,
         });
       }}
       data-card-type="show-card"

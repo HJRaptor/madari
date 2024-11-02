@@ -84,6 +84,7 @@ const SimpleMovieCard = forwardRef<
           index,
           categoryId: listId,
           id: data.id,
+          data: data,
         });
       }}
       data-card-type="show-card"

@@ -4,28 +4,10 @@ const ShimmerLoader = () => {
   const [css] = useStyletron();
 
   const shimmerContainerStyles = css({
-    height: '85vh',
+    height: '300px',
     width: '100%',
     position: 'relative',
     overflow: 'hidden',
-    backgroundColor: '#141414',
-  });
-
-  const shimmerStyles = css({
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    backgroundImage: `
-      linear-gradient(
-        90deg,
-        transparent 0%,
-        rgba(255, 255, 255, 0.08) 50%,
-        transparent 100%
-      )
-    `,
-    animation: 'shimmer 1s infinite',
   });
 
   const contentStyles = css({
@@ -50,7 +32,6 @@ const ShimmerLoader = () => {
 
   return (
     <div className={shimmerContainerStyles}>
-      <div className={shimmerStyles} />
       <div className={contentStyles}>
         <div
           className={css({

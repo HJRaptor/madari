@@ -13,6 +13,7 @@ import { Provider as JotaiProvider } from 'jotai';
 import AppSkeleton from '@/features/common/components/Loader';
 import { RouterProvider } from 'react-router-dom';
 import { router } from '@/router.tsx';
+import { VideoPlayer } from '@/features/video/components/VideoPlayer';
 
 const root = document.getElementById('root');
 
@@ -21,7 +22,22 @@ if (root) {
     <StrictMode>
       <IntlProvider locale="en">
         <StyletronProvider value={styletronEngine}>
-          <BaseProvider theme={AppTheme} zIndex={20}>
+          <BaseProvider
+            theme={AppTheme}
+            zIndex={20}
+            overrides={{
+              AppContainer: {
+                style: {
+                  height: '100%',
+                },
+              },
+              LayersContainer: {
+                style: {
+                  height: '100%',
+                },
+              },
+            }}
+          >
             <QueryClientProvider client={queryClient}>
               <Suspense fallback={<AppSkeleton />}>
                 <AddonProviders
@@ -32,6 +48,7 @@ if (root) {
                 >
                   <JotaiProvider>
                     <RouterProvider router={router} />
+                    <VideoPlayer />
                   </JotaiProvider>
                 </AddonProviders>
               </Suspense>

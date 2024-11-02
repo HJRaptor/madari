@@ -3,9 +3,6 @@ import { useStyletron } from 'baseui';
 import { useContext, useEffect, useMemo } from 'react';
 import HorizontalWindowList from '@/features/listing/components/ShowListContainer';
 import { AddonContext } from '@/features/addon/providers/AddonContext.ts';
-import { VisualViewer } from '@/features/visual/components';
-import { useAtom } from 'jotai/index';
-import { activeTitle } from '@/features/listing/atoms/active-title.ts';
 
 function App() {
   const [css, $theme] = useStyletron();
@@ -29,52 +26,21 @@ function App() {
     css,
   ]);
 
-  const [, setAtom] = useAtom(activeTitle);
-
   return (
     <div
       className={css({
-        backgroundColor: $theme.colors.backgroundPrimary,
         height: '100%',
+        zIndex: 11,
+        position: 'fixed',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        background: `linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,.5) 30%, transparent 100%)`,
       })}
     >
       <TopBar />
-      <div
-        className={css({
-          height: '100vh',
-          display: 'flex',
-          flexDirection: 'column',
-          position: 'relative',
-        })}
-      >
-        <VisualViewer />
-        <div
-          className={css({
-            position: 'relative',
-            flexGrow: 1,
-            minHeight: '400px',
-            paddingLeft: '24px',
-            paddingRight: '24px',
-          })}
-          onScroll={() => {
-            setAtom(undefined);
-          }}
-          onWheel={() => {}}
-        >
-          <div
-            className={css({
-              position: 'absolute',
-              top: '0',
-              left: 0,
-              right: 0,
-              height: '12px',
-              background: `linear-gradient(to bottom, ${$theme.colors.backgroundPrimary} 0%, ${$theme.colors.backgroundPrimary} 100%)`,
-              zIndex: 10,
-            })}
-          ></div>
-          <ShowRenderer />
-        </div>
-      </div>
+      <ShowRenderer />
     </div>
   );
 }

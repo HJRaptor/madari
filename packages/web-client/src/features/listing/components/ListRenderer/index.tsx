@@ -31,10 +31,6 @@ const ListRenderer: React.FC<ListRendererProps> = ({
   gap = 16,
   data = [],
   listId,
-  next,
-  nextId,
-  prev,
-  prevId,
   itemWidth = 180, // Default card width
   height = 240 + 24, // Default height including padding
 }) => {
@@ -143,26 +139,9 @@ const ListRenderer: React.FC<ListRendererProps> = ({
               categoryId: listId,
               index,
               id: data[index]?.id,
+              data: data[index],
             };
           });
-        }}
-        onTop={() => {
-          if (prev) {
-            setItem({
-              categoryId: prev,
-              index: 0,
-              id: prevId,
-            });
-          }
-        }}
-        onBottom={() => {
-          if (next) {
-            setItem({
-              categoryId: next,
-              index: 0,
-              id: nextId,
-            });
-          }
         }}
         onLeft={() => {
           setItem((prev) => {
@@ -180,6 +159,7 @@ const ListRenderer: React.FC<ListRendererProps> = ({
               categoryId: listId,
               id: data[index]?.id,
               index,
+              data: data[index],
             };
           });
         }}

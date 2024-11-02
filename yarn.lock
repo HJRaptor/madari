@@ -796,6 +796,7 @@ __metadata:
     eslint-plugin-react-hooks: "npm:^5.0.0"
     eslint-plugin-react-refresh: "npm:^0.4.14"
     globals: "npm:^15.11.0"
+    jotai-effect: "npm:^1.0.3"
     lodash: "npm:^4.17.21"
     lucide-react: "npm:^0.454.0"
     maverick.js: "npm:^0.43.2"
@@ -3691,6 +3692,15 @@ __metadata:
     "@pkgjs/parseargs":
       optional: true
   checksum: 10c0/6acc10d139eaefdbe04d2f679e6191b3abf073f111edf10b1de5302c97ec93fffeb2fdd8681ed17f16268aa9dd4f8c588ed9d1d3bffbbfa6e8bf897cbb3149b9
+  languageName: node
+  linkType: hard
+
+"jotai-effect@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "jotai-effect@npm:1.0.3"
+  peerDependencies:
+    jotai: ">=2.5.0"
+  checksum: 10c0/f8877f909446042c42ceffe5fbf1c42f5517525655548dfd9ecc60ebe4140581ae0bdef2f3ae84da7c6c8aabd2852699b62c1eba071fe46d178298dd829509cc
   languageName: node
   linkType: hard
 

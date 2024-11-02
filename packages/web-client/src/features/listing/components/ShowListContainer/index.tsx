@@ -1,4 +1,11 @@
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   ListChildComponentProps,
   VariableSizeList as List,
@@ -12,6 +19,9 @@ import { useQuery } from '@tanstack/react-query';
 import { MovieInfo } from '@/features/addon/service/Addon.tsx';
 import { useAtom } from 'jotai';
 import { activeTitle } from '@/features/listing/atoms/active-title.ts';
+import { tileViewAtom } from '@/features/listing/atoms/tiles-view.ts';
+import { StyleObject } from 'styletron-react';
+import VisualViewer from '@/features/visual/components';
 
 interface Item {
   id: string;
@@ -43,8 +53,10 @@ const OVERSCAN_COUNT = 1;
 
 // Styled components with performance optimizations
 const Container = styled('div', {
-  width: '100%',
+  width: 'calc(100% - 36px - 36px - 36px- 36px - 36px)',
   height: '100%',
+  paddingLeft: '36px',
+  paddingRight: '36px',
   position: 'relative',
   contain: 'strict', // CSS containment for better performance
 });
@@ -190,6 +202,30 @@ const VerticalWindowList: React.FC<VerticalWindowListProps> = ({
 
   const [css] = useStyletron();
 
+  const [tileView, setTileView] = useAtom(tileViewAtom);
+
+  const transformCss: StyleObject = useMemo(() => {
+    switch (tileView) {
+      case 'hidden':
+        return {
+          opacity: 0,
+        };
+      case 'medium':
+        return {
+          transform: 'translateY(40vh)',
+        };
+      case 'full':
+        return {
+          transform: 'translateY(0)',
+        };
+    }
+
+    return {
+      height: '100%',
+      transform: 'transformY(0)',
+    };
+  }, [tileView]);
+
   // Don't render until we have dimensions
   if (dimensions.width === 0 || dimensions.height === 0) {
     return <Container ref={containerRef} />;
@@ -197,19 +233,26 @@ const VerticalWindowList: React.FC<VerticalWindowListProps> = ({
 
   return (
     <div
+      data-testid="show-list-container"
       onBlur={() => {
         setAtom(undefined);
       }}
       data-card-type="main-list-wrapper"
       className={css({
-        height: '100%',
         width: '100%',
+        height: 'calc(100vh - 96px)',
+        marginTop: '96px',
+        transitionProperty: 'all',
+        transitionDuration: '300ms',
+        transitionTimingFunction: 'cubic-bezier(0.26, 0.54, 0.32, 1)',
+        ...transformCss,
       })}
     >
+      <VisualViewer />
       <Container ref={containerRef}>
         <ScrollContainer
           onWheel={() => {
-            setAtom(null);
+            setTileView('full');
           }}
         >
           <List
