@@ -3,6 +3,8 @@ import { useStyletron } from 'baseui';
 import { useContext, useEffect, useMemo } from 'react';
 import HorizontalWindowList from '@/features/listing/components/ShowListContainer';
 import { AddonContext } from '@/features/addon/providers/AddonContext.ts';
+import { useAtom } from 'jotai/index';
+import { tileViewAtom } from '@/features/listing/atoms/tiles-view.ts';
 
 function App() {
   const [css, $theme] = useStyletron();
@@ -26,8 +28,15 @@ function App() {
     css,
   ]);
 
+  const [view, setView] = useAtom(tileViewAtom);
+
   return (
     <div
+      onMouseMove={() => {
+        if (view === 'hidden') {
+          setView('medium');
+        }
+      }}
       className={css({
         height: '100%',
         zIndex: 11,

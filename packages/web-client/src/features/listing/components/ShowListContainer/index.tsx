@@ -17,11 +17,12 @@ import { FormattedMessage } from 'react-intl';
 import ListRenderer from '@/features/listing/components/ListRenderer';
 import { useQuery } from '@tanstack/react-query';
 import { MovieInfo } from '@/features/addon/service/Addon.tsx';
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { activeTitle } from '@/features/listing/atoms/active-title.ts';
 import { tileViewAtom } from '@/features/listing/atoms/tiles-view.ts';
 import { StyleObject } from 'styletron-react';
 import VisualViewer from '@/features/visual/components';
+import { videoStateAtom } from '@/features/video/atom/video-state.ts';
 
 interface Item {
   id: string;
@@ -204,15 +205,44 @@ const VerticalWindowList: React.FC<VerticalWindowListProps> = ({
 
   const [tileView, setTileView] = useAtom(tileViewAtom);
 
+  const timeout = useRef<null | number>();
+
+  const video = useAtomValue(videoStateAtom);
+
+  useEffect(() => {
+    if (timeout.current) {
+      clearTimeout(timeout.current);
+      timeout.current = null;
+    }
+    console.log(video.isPlaying);
+    if (video.isPlaying) {
+      timeout.current = setTimeout(() => {
+        setTileView((prev) => {
+          if (prev === 'medium') {
+            return 'hidden';
+          }
+
+          return prev;
+        });
+      }, 15_000) as unknown as number;
+
+      return () => {
+        if (timeout.current) {
+          clearTimeout(timeout.current);
+        }
+      };
+    }
+  }, [video.isPlaying, video.videoUrl, setTileView]);
+
   const transformCss: StyleObject = useMemo(() => {
     switch (tileView) {
       case 'hidden':
         return {
-          opacity: 0,
+          transform: 'translateY(100vh)',
         };
       case 'medium':
         return {
-          transform: 'translateY(40vh)',
+          transform: 'translateY(calc(34vh))',
         };
       case 'full':
         return {

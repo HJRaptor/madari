@@ -71,7 +71,7 @@ export function VisualViewer() {
     position: 'relative',
     height: '300px',
     maxHeight:
-      currentValue !== null && value !== undefined && data ? '100vh' : '94px',
+      currentValue !== null && value !== undefined && data ? '100vh' : '0',
     opacity: currentValue !== null ? 1 : 0,
     transitionProperty: 'max-height, opacity',
     width: '100%',
@@ -107,6 +107,7 @@ export function VisualViewer() {
     fontSize: '5rem',
     fontWeight: 'bold',
     letterSpacing: '-0.025em',
+    marginTop: theme.sizing.scale0,
     marginBottom: theme.sizing.scale600,
     animation: 'slideUp 0.3s ease-out forwards',
     textShadow: '0 2px 4px rgba(0,0,0,0.3)',
@@ -134,7 +135,7 @@ export function VisualViewer() {
     display: 'grid',
     gridTemplateColumns: '2fr 1fr',
     gap: theme.sizing.scale800,
-    marginBottom: theme.sizing.scale800,
+    marginBottom: theme.sizing.scale0,
   });
 
   const descriptionStyles = css({

@@ -5,9 +5,13 @@ import { videoStateAtom } from '@/features/video/atom/video-state.ts';
 export const tileViewAtom = withAtomEffect(
   atom<'full' | 'medium' | 'hidden'>('full'),
   (_get, set) => {
-    set(videoStateAtom, {
-      isPlaying: false,
-      playerKind: 'mini',
-    });
+    const val = _get(tileViewAtom);
+
+    if (val === 'full') {
+      set(videoStateAtom, {
+        isPlaying: false,
+        playerKind: 'mini',
+      });
+    }
   },
 );
