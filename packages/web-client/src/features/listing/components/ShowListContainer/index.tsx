@@ -119,6 +119,37 @@ const ItemRenderer = memo(
       queryKey: ['query', item.id],
     });
 
+    const [, setActiveTitle] = useAtom(activeTitle);
+
+    useEffect(() => {
+      const handleer: EventListenerOrEventListenerObject = (evt) => {
+        const id = (evt as unknown as { detail: string }).detail;
+
+        if (id === item.id && data) {
+          setActiveTitle({
+            id: data[0].id,
+            index: 0,
+            categoryId: item.id,
+            data: data[0],
+          });
+
+          setTimeout(() => {
+            (
+              document.querySelector(
+                `div[data-card-type="show-card"][data-index="0"][data-category="${item.id}"]`,
+              ) as HTMLDivElement
+            )?.focus();
+          }, 1);
+        }
+      };
+
+      document.body.addEventListener('focusCategory', handleer);
+
+      return () => {
+        document.body.removeEventListener('focusCategory', handleer);
+      };
+    }, [data, item.id, setActiveTitle]);
+
     return (
       <ItemContainer style={modifiedStyle}>
         <HeaderContainer>

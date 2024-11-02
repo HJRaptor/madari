@@ -4,6 +4,8 @@ export interface AddonConfig {
   name: string;
   description: string;
   resources: string[];
+  logo?: string;
+  background?: string;
   types: string[];
   idPrefixes: string[];
   catalogs: AddonCatalog[];

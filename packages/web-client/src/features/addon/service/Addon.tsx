@@ -1,7 +1,10 @@
 import { AddonConfig } from '@/features/addon/hooks/use-fetch.tsx';
 
 export class Addon {
-  constructor(private config: AddonConfig) {}
+  constructor(
+    public config: AddonConfig,
+    public installUrl: string,
+  ) {}
 
   loadCatalog(): {
     title: string;

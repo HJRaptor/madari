@@ -314,7 +314,7 @@ export default function SearchBox(props: SearchBoxProps) {
         zIndex: 10,
         alignItems: 'center',
         placeContent: 'center',
-        transform: props.isActive ? 'translateY(0)' : 'translateY(-100%)',
+        transform: props.isActive ? 'translateY(0)' : 'translateY(-110%)',
         transitionProperty: 'transform',
         transitionTimingFunction: 'ease',
         transitionDuration: '100ms',

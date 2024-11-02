@@ -13,6 +13,7 @@ import { Provider as JotaiProvider } from 'jotai';
 import AppSkeleton from '@/features/common/components/Loader';
 import { RouterProvider } from 'react-router-dom';
 import { router } from '@/router.tsx';
+import { ToasterContainer } from 'baseui/toast';
 
 const root = document.getElementById('root');
 
@@ -41,7 +42,9 @@ if (root) {
               <Suspense fallback={<AppSkeleton />}>
                 <AddonProviders>
                   <JotaiProvider>
-                    <RouterProvider router={router} />
+                    <ToasterContainer placement="bottomRight">
+                      <RouterProvider router={router} />
+                    </ToasterContainer>
                   </JotaiProvider>
                 </AddonProviders>
               </Suspense>

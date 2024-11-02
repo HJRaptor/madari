@@ -16,12 +16,15 @@ export default function AddonProviders(props: AddonProvidersProps) {
   const data = useSuspenseQueries({
     queries: addonsUrl.map((item) => ({
       queryKey: ['addons', item.url] as QueryKey,
-      queryFn: () => fetchAddons(item.url),
+      queryFn: async () => ({
+        data: await fetchAddons(item.url),
+        url: item.url,
+      }),
     })),
   });
 
   const addons = useMemo(() => {
-    return data.map((res) => new Addon(res.data));
+    return data.map((res) => new Addon(res.data.data, res.data.url));
   }, [data]);
 
   return (

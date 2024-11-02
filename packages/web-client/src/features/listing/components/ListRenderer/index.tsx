@@ -17,8 +17,6 @@ interface ListRendererProps {
   height?: number;
   prev?: string;
   next?: string;
-  prevId?: string;
-  nextId?: string;
 }
 
 interface ItemData {
@@ -31,6 +29,8 @@ const ListRenderer: React.FC<ListRendererProps> = ({
   gap = 16,
   data = [],
   listId,
+  next,
+  prev,
   itemWidth = 180, // Default card width
   height = 240 + 24, // Default height including padding
 }) => {
@@ -122,15 +122,35 @@ const ListRenderer: React.FC<ListRendererProps> = ({
     100,
   );
 
+  useEffect(() => {
+    const handleer: EventListenerOrEventListenerObject = (evt) => {
+      const id = (evt as unknown as { detail: string }).detail;
+
+      if (id === listId) {
+        scrollTo(0);
+      }
+    };
+
+    document.body.addEventListener('focusCategory', handleer);
+
+    return () => {
+      document.body.removeEventListener('focusCategory', handleer);
+    };
+  }, [listId, scrollTo]);
+
   return (
     <div ref={containerRef} className={containerStyle}>
       <ArrowKeyCard
         isCurrent={atom?.categoryId === listId}
         onRight={() => {
           setItem((prev) => {
-            if (!prev) {
+            if (!prev || !atom) {
               return;
             }
+            if (atom.categoryId !== listId) {
+              return;
+            }
+
             const index = 1 + prev.index;
 
             scrollTo(index);
@@ -143,9 +163,30 @@ const ListRenderer: React.FC<ListRendererProps> = ({
             };
           });
         }}
+        onTop={() => {
+          if (prev) {
+            document.body.dispatchEvent(
+              new CustomEvent('focusCategory', {
+                detail: prev,
+              }),
+            );
+          }
+        }}
+        onBottom={() => {
+          if (next) {
+            document.body.dispatchEvent(
+              new CustomEvent('focusCategory', {
+                detail: next,
+              }),
+            );
+          }
+        }}
         onLeft={() => {
           setItem((prev) => {
-            if (!prev) {
+            if (!prev || !atom) {
+              return;
+            }
+            if (atom.categoryId !== listId) {
               return;
             }
 
