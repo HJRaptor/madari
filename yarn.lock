@@ -504,6 +504,32 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@floating-ui/core@npm:^1.6.0":
+  version: 1.6.8
+  resolution: "@floating-ui/core@npm:1.6.8"
+  dependencies:
+    "@floating-ui/utils": "npm:^0.2.8"
+  checksum: 10c0/d6985462aeccae7b55a2d3f40571551c8c42bf820ae0a477fc40ef462e33edc4f3f5b7f11b100de77c9b58ecb581670c5c3f46d0af82b5e30aa185c735257eb9
+  languageName: node
+  linkType: hard
+
+"@floating-ui/dom@npm:^1.6.10":
+  version: 1.6.12
+  resolution: "@floating-ui/dom@npm:1.6.12"
+  dependencies:
+    "@floating-ui/core": "npm:^1.6.0"
+    "@floating-ui/utils": "npm:^0.2.8"
+  checksum: 10c0/c67b39862175b175c6ac299ea970f17a22c7482cfdf3b1bc79313407bf0880188b022b878953fa69d3ce166ff2bd9ae57c86043e5dd800c262b470d877591b7d
+  languageName: node
+  linkType: hard
+
+"@floating-ui/utils@npm:^0.2.8":
+  version: 0.2.8
+  resolution: "@floating-ui/utils@npm:0.2.8"
+  checksum: 10c0/a8cee5f17406c900e1c3ef63e3ca89b35e7a2ed645418459a73627b93b7377477fc888081011c6cd177cac45ec2b92a6cab018c14ea140519465498dddd2d3f9
+  languageName: node
+  linkType: hard
+
 "@formatjs/cli@npm:^6.3.5":
   version: 6.3.5
   resolution: "@formatjs/cli@npm:6.3.5"
@@ -761,6 +787,7 @@ __metadata:
     "@types/react-dom": "npm:^18.3.1"
     "@types/react-window": "npm:^1"
     "@types/react-window-infinite-loader": "npm:^1"
+    "@vidstack/react": "npm:^1.12.12"
     "@vitejs/plugin-react": "npm:^4.3.3"
     babel-plugin-formatjs: "npm:^10.5.22"
     baseui: "npm:0.0.0-next-18f01efe0"
@@ -771,6 +798,7 @@ __metadata:
     globals: "npm:^15.11.0"
     lodash: "npm:^4.17.21"
     lucide-react: "npm:^0.454.0"
+    maverick.js: "npm:^0.43.2"
     pako: "npm:^2.1.0"
     prettier: "npm:^3.3.3"
     puppeteer: "npm:10.0.0"
@@ -786,6 +814,7 @@ __metadata:
     styletron-react: "npm:^6.1.1"
     typescript: "npm:~5.6.2"
     typescript-eslint: "npm:^8.11.0"
+    vidstack: "npm:^0.6.15"
     vite: "npm:^5.4.10"
   languageName: unknown
   linkType: soft
@@ -869,6 +898,13 @@ __metadata:
     "@babel/runtime": "npm:^7.12.0"
     gl-matrix: "npm:^3.4.0"
   checksum: 10c0/95a1267261e03fa0194ec5ac5f3f8c3a13e1182cf3865d4d3bbd669706d42bd067335d1812df2e844c63c1f0f21c50e08af2b90168f2db1d3fa3ba2087f59703
+  languageName: node
+  linkType: hard
+
+"@maverick-js/signals@npm:^5.10.3":
+  version: 5.11.5
+  resolution: "@maverick-js/signals@npm:5.11.5"
+  checksum: 10c0/8a9e2788002c597a828659813f77005d6569f0e96636a6b699d9ec3e17bdd4479cfa94e67c0336d9493d78f84c4dd8b40c387658ac8d74adf432cf34984da07a
   languageName: node
   linkType: hard
 
@@ -1382,6 +1418,19 @@ __metadata:
     "@typescript-eslint/types": "npm:8.12.2"
     eslint-visitor-keys: "npm:^3.4.3"
   checksum: 10c0/1f770d361bcb03ed028e5589824f6c7ba364da59fe8b982c2fed0878ad25890d80ebd6c72618ab5149317501964b7db106e20834179d4aa707a8cbffcca89d08
+  languageName: node
+  linkType: hard
+
+"@vidstack/react@npm:^1.12.12":
+  version: 1.12.12
+  resolution: "@vidstack/react@npm:1.12.12"
+  dependencies:
+    "@floating-ui/dom": "npm:^1.6.10"
+    media-captions: "npm:^1.0.4"
+  peerDependencies:
+    "@types/react": ^18.0.0
+    react: ^18.0.0
+  checksum: 10c0/a4deed92f6805b0ba5867e61960e29cf0de0ae2b23b4db197f8d1fbd2fea254a93958cf00227d60272a5f36d6421e55f82e78aa7585c4a633ad8a6767f9b0246
   languageName: node
   linkType: hard
 
@@ -3906,6 +3955,37 @@ __metadata:
   languageName: node
   linkType: hard
 
+"maverick.js@npm:0.37.0":
+  version: 0.37.0
+  resolution: "maverick.js@npm:0.37.0"
+  dependencies:
+    "@maverick-js/signals": "npm:^5.10.3"
+    type-fest: "npm:^3.8.0"
+  checksum: 10c0/26a8d33d28aa2199e70f4f6a36e1776b4fd58796593b02e0af0901ef850a047fa64ea157ff1863bc83a05b0eaeac0576eb18d36a157c436664d6b8fe500334d5
+  languageName: node
+  linkType: hard
+
+"maverick.js@npm:^0.43.2":
+  version: 0.43.2
+  resolution: "maverick.js@npm:0.43.2"
+  checksum: 10c0/cc04c4c4b37f80080db1a9d5a001ce5310cfd261b285afa466d1fdf53cca281915acd552187b45df1e3a48f36180bb3962f396ad8c4aea160b76b331279ca061
+  languageName: node
+  linkType: hard
+
+"media-captions@npm:0.0.18":
+  version: 0.0.18
+  resolution: "media-captions@npm:0.0.18"
+  checksum: 10c0/616ead02c3f755ab0a45f79cdc6a9204c6c157c450041e126e7d40a7e91fef5e562b343c497d276a9f99c44da23c12bcc53dbb9351c3c31448e19239dc22bc53
+  languageName: node
+  linkType: hard
+
+"media-captions@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "media-captions@npm:1.0.4"
+  checksum: 10c0/62c6df2909b748284e929fe3d169548b42b91ea79374f67f89a313aa529395b024d5be82056613f3e88ebb2e4a86464f6c6a8d569bc7bae2f5542baa350031ba
+  languageName: node
+  linkType: hard
+
 "memoize-one@npm:5.0.0":
   version: 5.0.0
   resolution: "memoize-one@npm:5.0.0"
@@ -5464,6 +5544,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"type-fest@npm:^3.8.0":
+  version: 3.13.1
+  resolution: "type-fest@npm:3.13.1"
+  checksum: 10c0/547d22186f73a8c04590b70dcf63baff390078c75ea8acd366bbd510fd0646e348bd1970e47ecf795b7cff0b41d26e9c475c1fedd6ef5c45c82075fbf916b629
+  languageName: node
+  linkType: hard
+
 "typed-array-buffer@npm:^1.0.2":
   version: 1.0.2
   resolution: "typed-array-buffer@npm:1.0.2"
@@ -5655,6 +5742,17 @@ __metadata:
   version: 1.0.2
   resolution: "util-deprecate@npm:1.0.2"
   checksum: 10c0/41a5bdd214df2f6c3ecf8622745e4a366c4adced864bc3c833739791aeeeb1838119af7daed4ba36428114b5c67dcda034a79c882e97e43c03e66a4dd7389942
+  languageName: node
+  linkType: hard
+
+"vidstack@npm:^0.6.15":
+  version: 0.6.15
+  resolution: "vidstack@npm:0.6.15"
+  dependencies:
+    maverick.js: "npm:0.37.0"
+    media-captions: "npm:0.0.18"
+    type-fest: "npm:^3.8.0"
+  checksum: 10c0/223d730bb38fe4c11b8d1cbc1a6e52450b72cb066804bdd9110cccc15910b0e0082ea48bb069fae56eeaaf70207f28b991cda328b161d10ba783be3e7ca649c3
   languageName: node
   linkType: hard
 

@@ -19,6 +19,16 @@ import { debounce } from 'lodash';
 import { ErrorView } from '@/features/visual/components/ErrorViewer';
 import ShimmerLoader from '@/features/visual/components/Shimmer';
 
+import '@vidstack/react/player/styles/default/theme.css';
+import '@vidstack/react/player/styles/default/layouts/audio.css';
+import '@vidstack/react/player/styles/default/layouts/video.css';
+
+import { MediaPlayer, MediaProvider, Poster } from '@vidstack/react';
+import {
+  defaultLayoutIcons,
+  DefaultVideoLayout,
+} from '@vidstack/react/player/layouts/default';
+
 export function VisualViewer() {
   const [css, theme] = useStyletron();
   const currentValue = useAtomValue(activeTitle);
@@ -260,6 +270,43 @@ export function VisualViewer() {
               backgroundColor: data.background,
             })}
           />
+
+          <div
+            className={css({
+              position: 'absolute',
+              top: 0,
+              bottom: 0,
+              left: 0,
+              right: 0,
+            })}
+          >
+            <div
+              className={css({
+                height: '100%',
+                width: '100%',
+              })}
+            >
+              <MediaPlayer
+                className={css({
+                  height: '100%',
+                })}
+                autoPlay={true}
+                src={`youtube/${data.trailers[0].source}`}
+                viewType="video"
+                streamType="on-demand"
+                logLevel="warn"
+                crossOrigin
+                playsInline
+                title={data.name}
+                poster={data.background}
+              >
+                <MediaProvider>
+                  <Poster className="vds-poster" />
+                </MediaProvider>
+                <DefaultVideoLayout icons={defaultLayoutIcons} />
+              </MediaPlayer>
+            </div>
+          </div>
 
           <div className={contentContainerStyles}>
             <h1 className={titleStyles}>{data.name}</h1>

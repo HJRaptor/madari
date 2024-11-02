@@ -15,9 +15,11 @@
     "compile:all": "yarn compile.en && yarn compile.mr"
   },
   "dependencies": {
+    "@vidstack/react": "^1.12.12",
     "baseui": "0.0.0-next-18f01efe0",
     "lodash": "^4.17.21",
     "lucide-react": "^0.454.0",
+    "maverick.js": "^0.43.2",
     "pako": "^2.1.0",
     "puppeteer": "10.0.0",
     "react": "^18.3.1",
@@ -29,7 +31,8 @@
     "react-window-infinite-loader": "^1.0.9",
     "styletron-engine-atomic": "^1.6.2",
     "styletron-engine-monolithic": "^1.0.0",
-    "styletron-react": "^6.1.1"
+    "styletron-react": "^6.1.1",
+    "vidstack": "^0.6.15"
   },
   "prettier": {
     "singleQuote": true,
