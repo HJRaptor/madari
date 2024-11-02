@@ -91,9 +91,6 @@ const SimpleMovieCard = forwardRef<
         width: width.toString() + 'px',
         padding: '4px', // Added padding for better outline visibility
       })}
-      onBlur={() => {
-        setActiveCard(undefined);
-      }}
       onFocus={() => {
         setActiveCard({
           index,

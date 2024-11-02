@@ -347,9 +347,6 @@ const MovieCardLarge = forwardRef<
         height: _props.height.toString() + 'px',
         width: _props.width.toString() + 'px',
       })}
-      onBlur={() => {
-        setActiveCard(undefined);
-      }}
       onFocus={() => {
         setActiveCard({
           index: _props.index,

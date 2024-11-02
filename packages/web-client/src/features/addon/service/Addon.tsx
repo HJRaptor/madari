@@ -51,7 +51,7 @@ export interface MovieInfo {
   trailers: Trailer[];
   popularity: number;
   id: string;
-  videos: Video[];
+  videos?: Video[];
   genres: string[];
   releaseInfo: string;
   trailerStreams: TrailerStream[];

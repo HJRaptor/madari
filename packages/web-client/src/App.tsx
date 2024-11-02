@@ -7,6 +7,7 @@ import { useAtom } from 'jotai/index';
 import { tileViewAtom } from '@/features/listing/atoms/tiles-view.ts';
 import { activeTitle } from '@/features/listing/atoms/active-title.ts';
 import { videoInfoDialog } from '@/features/listing/atoms/video-info-dialog.ts';
+import InjectDialogue from '@/features/video/components/VideoSelector/InjectDialogue.tsx';
 
 function App() {
   const [css, $theme] = useStyletron();
@@ -68,6 +69,9 @@ function App() {
       })}
     >
       <TopBar />
+
+      <InjectDialogue />
+
       <ShowRenderer />
     </div>
   );

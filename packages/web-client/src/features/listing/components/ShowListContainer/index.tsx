@@ -220,7 +220,7 @@ const VerticalWindowList: React.FC<VerticalWindowListProps> = ({
   // Memoized item size getter
   const getItemSize = useCallback(() => ITEM_HEIGHT, []);
 
-  const [atom, setAtom] = useAtom(activeTitle);
+  const [atom] = useAtom(activeTitle);
 
   useEffect(() => {
     const index = items.findIndex((item) => item.id === atom?.categoryId);
@@ -297,9 +297,6 @@ const VerticalWindowList: React.FC<VerticalWindowListProps> = ({
   return (
     <div
       data-testid="show-list-container"
-      onBlur={() => {
-        setAtom(undefined);
-      }}
       onWheel={() => {
         if (view === 'hidden') {
           setView('medium');

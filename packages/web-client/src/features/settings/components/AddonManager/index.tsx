@@ -356,7 +356,11 @@ const AddonManager: React.FC = () => {
                   },
                 }}
               >
-                Bypass with RealDebrid
+                Stream with RealDebrid <br />
+                <small>
+                  Only works if the addons is serving from Torrentio RD
+                  compatible api and serving from RealDebrid.
+                </small>
               </Checkbox>
             </div>
             {enableRealDebrid && (

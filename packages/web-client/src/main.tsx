@@ -24,7 +24,7 @@ if (root) {
         <StyletronProvider value={styletronEngine}>
           <BaseProvider
             theme={AppTheme}
-            zIndex={20}
+            zIndex={100}
             overrides={{
               AppContainer: {
                 style: {
@@ -42,7 +42,10 @@ if (root) {
               <Suspense fallback={<AppSkeleton />}>
                 <AddonProviders>
                   <JotaiProvider>
-                    <ToasterContainer placement="bottomRight">
+                    <ToasterContainer
+                      autoHideDuration={10000}
+                      placement="bottomRight"
+                    >
                       <RouterProvider router={router} />
                     </ToasterContainer>
                   </JotaiProvider>
