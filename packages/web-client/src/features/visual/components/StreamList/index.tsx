@@ -5,6 +5,7 @@ import { ExternalLink, Play } from 'lucide-react';
 import { MovieInfo } from '@/features/addon/service/Addon.tsx';
 import { QueryKey, useSuspenseQueries } from '@tanstack/react-query';
 import { AddonContext } from '@/features/addon/providers/AddonContext.ts';
+import { HeadingSmall } from 'baseui/typography';
 
 interface StreamSource {
   name: string;
@@ -37,8 +38,6 @@ const StreamList: React.FC<Props> = ({
     return addonContext.filter((res) => res.supportStream);
   }, [addonContext]);
 
-  console.log(streamSupportedAddons);
-
   const streamUrls: { addon: string; url: string }[] = useMemo(() => {
     return streamSupportedAddons.map((res) => {
       return {
@@ -69,8 +68,6 @@ const StreamList: React.FC<Props> = ({
     })),
   }).flat();
 
-  console.log(streams);
-
   const _streams = useMemo(() => {
     try {
       return streams.map((stream) => stream.data).flat();
@@ -79,6 +76,21 @@ const StreamList: React.FC<Props> = ({
       return [];
     }
   }, [streams]);
+
+  if (_streams.length === 0) {
+    return (
+      <div
+        className={css({
+          width: '100%',
+        })}
+      >
+        <HeadingSmall>
+          No streams available please install plugin to provide the streams.
+          Available plugins {streamSupportedAddons.length}.
+        </HeadingSmall>
+      </div>
+    );
+  }
 
   return (
     <div

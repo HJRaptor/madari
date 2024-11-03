@@ -69,6 +69,11 @@ export default function PlayerPage() {
           });
       }
     } else {
+      if (url) {
+        setState({
+          urls: [url],
+        });
+      }
     }
   }, [appSettings.addons, id, suppliedAddon?.installUrl, type, url]);
 
@@ -107,6 +112,7 @@ export default function PlayerPage() {
         streamType="on-demand"
         crossOrigin
         playsInline
+        autoPlay={true}
         src={state.urls.map((res) => ({ src: res }) as never)}
       >
         <MediaProvider>

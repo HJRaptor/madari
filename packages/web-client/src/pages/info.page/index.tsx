@@ -11,6 +11,7 @@ import { activeTitle } from '@/features/listing/atoms/active-title.ts';
 import { MovieInfo } from '@/features/addon/service/Addon.tsx';
 import EpisodeList from '@/features/visual/components/SeriesViewer';
 import StreamList from '@/features/visual/components/StreamList';
+import { Spinner } from 'baseui/spinner';
 
 export default function InfoPage() {
   const [css] = useStyletron();
@@ -118,7 +119,21 @@ export default function InfoPage() {
           }}
         />
       )}
-      <Suspense fallback={<>Wrong</>}>
+
+      <Suspense
+        fallback={
+          <div
+            className={css({
+              display: 'flex',
+              alignItems: 'center',
+              placeContent: 'center',
+              height: '100%',
+            })}
+          >
+            <Spinner />
+          </div>
+        }
+      >
         {data &&
           (data.type === 'movie' || (data.type === 'series' && selected)) && (
             <StreamList
