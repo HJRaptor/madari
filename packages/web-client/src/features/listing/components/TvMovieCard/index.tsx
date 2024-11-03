@@ -1,11 +1,11 @@
-import { forwardRef, useEffect, useMemo, useState } from 'react';
+import { forwardRef, useMemo, useState } from 'react';
 import { useStyletron } from 'baseui';
 import { useAtom } from 'jotai';
 import { activeTitle } from '@/features/listing/atoms/active-title.ts';
 import { MovieInfo } from '@/features/addon/service/Addon.tsx';
 import { Button } from 'baseui/button';
 import { PlayIcon } from 'lucide-react';
-import { videoInfoDialog } from '@/features/listing/atoms/video-info-dialog.ts';
+import { useNavigate } from 'react-router-dom';
 
 const SimpleMovieCard = forwardRef<
   HTMLDivElement,
@@ -25,12 +25,6 @@ const SimpleMovieCard = forwardRef<
   const isActive = useMemo(() => {
     return active?.index === index && active.categoryId === listId;
   }, [index, listId, active?.categoryId, active?.index]);
-
-  useEffect(() => {
-    if (!isActive) {
-      return;
-    }
-  }, [isActive, ref]);
 
   const posterUrl = `https://images.metahub.space/poster/medium/${data.imdb_id}/img`;
 
@@ -70,19 +64,22 @@ const SimpleMovieCard = forwardRef<
     },
   });
 
-  const [, setValue] = useAtom(videoInfoDialog);
+  const navigate = useNavigate();
 
   return (
     <div
       ref={ref}
-      onKeyUp={(ev) => {
-        if (ev.key === 'Enter') {
-          setValue(data);
-        }
-      }}
       onClick={() => {
         if (isActive) {
-          setValue(data);
+          console.log(isActive, 'test');
+          navigate(`/info/${active?.data.type}/${active?.data.id}`);
+        } else {
+          setActiveCard({
+            index,
+            categoryId: listId,
+            id: data.id,
+            data: data,
+          });
         }
       }}
       className={css({
@@ -91,14 +88,6 @@ const SimpleMovieCard = forwardRef<
         width: width.toString() + 'px',
         padding: '4px', // Added padding for better outline visibility
       })}
-      onFocus={() => {
-        setActiveCard({
-          index,
-          categoryId: listId,
-          id: data.id,
-          data: data,
-        });
-      }}
       data-card-type="show-card"
       data-movie={data.id}
       data-index={index}

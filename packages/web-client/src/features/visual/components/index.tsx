@@ -208,7 +208,7 @@ export function VisualViewer() {
     : [];
 
   return (
-    <div className={containerStyles}>
+    <div className={containerStyles} data-type="visual-wier">
       {data ? (
         <>
           <div className={contentContainerStyles}>

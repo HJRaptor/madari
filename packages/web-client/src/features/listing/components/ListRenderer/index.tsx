@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useStyletron } from 'baseui';
-import { FixedSizeList, ListOnItemsRenderedProps } from 'react-window';
+import { FixedSizeList } from 'react-window';
 import { MovieInfo } from '@/features/addon/service/Addon';
 import ArrowKeyCard from '@/features/listing/components/ArrowKeyCard';
 import { debounce } from 'lodash';
@@ -29,8 +29,6 @@ const ListRenderer: React.FC<ListRendererProps> = ({
   gap = 16,
   data = [],
   listId,
-  next,
-  prev,
   itemWidth = 180, // Default card width
   height = 240 + 24, // Default height including padding
 }) => {
@@ -89,10 +87,7 @@ const ListRenderer: React.FC<ListRendererProps> = ({
   );
 
   // Handle scroll synchronization
-  const handleItemsRendered = useCallback(
-    ({}: ListOnItemsRenderedProps) => {},
-    [],
-  );
+  const handleItemsRendered = useCallback(() => {}, []);
 
   const containerStyle = css({
     position: 'relative',
@@ -112,7 +107,7 @@ const ListRenderer: React.FC<ListRendererProps> = ({
     WebkitOverflowScrolling: 'touch',
   });
 
-  const [atom, setItem] = useAtom(activeTitle);
+  const [atom] = useAtom(activeTitle);
 
   const scrollTo = useDebounce(
     (index: number) => {
@@ -140,71 +135,7 @@ const ListRenderer: React.FC<ListRendererProps> = ({
 
   return (
     <div ref={containerRef} className={containerStyle}>
-      <ArrowKeyCard
-        isCurrent={atom?.categoryId === listId}
-        onRight={() => {
-          setItem((prev) => {
-            if (!prev || !atom) {
-              return;
-            }
-            if (atom.categoryId !== listId) {
-              return;
-            }
-
-            const index = 1 + prev.index;
-
-            scrollTo(index);
-
-            return {
-              categoryId: listId,
-              index,
-              id: data[index]?.id,
-              data: data[index],
-            };
-          });
-        }}
-        onTop={() => {
-          if (prev) {
-            document.body.dispatchEvent(
-              new CustomEvent('focusCategory', {
-                detail: prev,
-              }),
-            );
-          }
-        }}
-        onBottom={() => {
-          if (next) {
-            document.body.dispatchEvent(
-              new CustomEvent('focusCategory', {
-                detail: next,
-              }),
-            );
-          }
-        }}
-        onLeft={() => {
-          setItem((prev) => {
-            if (!prev || !atom) {
-              return;
-            }
-            if (atom.categoryId !== listId) {
-              return;
-            }
-
-            const index = prev.index - 1 === -1 ? prev.index : prev.index - 1;
-
-            requestAnimationFrame(() => {
-              scrollTo(index);
-            });
-
-            return {
-              categoryId: listId,
-              id: data[index]?.id,
-              index,
-              data: data[index],
-            };
-          });
-        }}
-      >
+      <ArrowKeyCard isCurrent={atom?.categoryId === listId}>
         {containerWidth > 0 && (
           <FixedSizeList
             ref={listRef}
@@ -227,3 +158,66 @@ const ListRenderer: React.FC<ListRendererProps> = ({
 };
 
 export default ListRenderer;
+
+//onRight={() => {
+//           setItem((prev) => {
+//             if (!prev || !atom) {
+//               return;
+//             }
+//             if (atom.categoryId !== listId) {
+//               return;
+//             }
+//
+//             const index = 1 + prev.index;
+//
+//             scrollTo(index);
+//
+//             return {
+//               categoryId: listId,
+//               index,
+//               id: data[index]?.id,
+//               data: data[index],
+//             };
+//           });
+//         }}
+//         onTop={() => {
+//           if (prev) {
+//             document.body.dispatchEvent(
+//               new CustomEvent('focusCategory', {
+//                 detail: prev,
+//               }),
+//             );
+//           }
+//         }}
+//         onBottom={() => {
+//           if (next) {
+//             document.body.dispatchEvent(
+//               new CustomEvent('focusCategory', {
+//                 detail: next,
+//               }),
+//             );
+//           }
+//         }}
+//         onLeft={() => {
+//           setItem((prev) => {
+//             if (!prev || !atom) {
+//               return;
+//             }
+//             if (atom.categoryId !== listId) {
+//               return;
+//             }
+//
+//             const index = prev.index - 1 === -1 ? prev.index : prev.index - 1;
+//
+//             requestAnimationFrame(() => {
+//               scrollTo(index);
+//             });
+//
+//             return {
+//               categoryId: listId,
+//               id: data[index]?.id,
+//               index,
+//               data: data[index],
+//             };
+//           });
+//         }}

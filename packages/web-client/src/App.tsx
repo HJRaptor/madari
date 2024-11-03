@@ -1,33 +1,34 @@
 import TopBar from '@/features/common/components/TopBar';
 import { useStyletron } from 'baseui';
-import { useContext, useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import HorizontalWindowList from '@/features/listing/components/ShowListContainer';
-import { AddonContext } from '@/features/addon/providers/AddonContext.ts';
 import { useAtom } from 'jotai/index';
 import { tileViewAtom } from '@/features/listing/atoms/tiles-view.ts';
-import { activeTitle } from '@/features/listing/atoms/active-title.ts';
-import { videoInfoDialog } from '@/features/listing/atoms/video-info-dialog.ts';
-import InjectDialogue from '@/features/video/components/VideoSelector/InjectDialogue.tsx';
+import { useLocation } from 'react-router-dom';
 
 function App() {
   const [css, $theme] = useStyletron();
 
-  const [active] = useAtom(activeTitle);
-  const [, setValue] = useAtom(videoInfoDialog);
+  // const [active, setActive] = useAtom(activeTitle);
+  // const navigate = useNavigate();
+  // const [, setTileView] = useAtom(tileViewAtom);
 
-  useEffect(() => {
-    const keyUp = (ev: KeyboardEvent) => {
-      if (ev.key === 'Enter' && active) {
-        ev.preventDefault();
-        setValue(active.data);
-      }
-    };
+  // const { pathname } = useLocation();
 
-    document.addEventListener('keyup', keyUp);
-    return () => {
-      document.removeEventListener('keyup', keyUp);
-    };
-  }, [active, setValue]);
+  // useEffect(() => {
+  //   const keyUp = (ev: KeyboardEvent) => {
+  //     if (ev.key === 'Enter' && active && !pathname.startsWith('/info')) {
+  //       ev.preventDefault();
+  //       setTileView('hidden');
+  //       navigate(`/info/${active.data.type}/${active.data.id}`);
+  //     }
+  //   };
+  //
+  //   document.addEventListener('keyup', keyUp);
+  //   return () => {
+  //     document.removeEventListener('keyup', keyUp);
+  //   };
+  // }, [active, navigate, pathname, setActive, setTileView]);
 
   useEffect(() => {
     const classForBody = css({
@@ -49,11 +50,16 @@ function App() {
   ]);
 
   const [view, setView] = useAtom(tileViewAtom);
-
+  const { pathname } = useLocation();
   return (
     <div
       onWheel={() => {
         if (view === 'hidden') {
+          setView('medium');
+        }
+      }}
+      onMouseMove={() => {
+        if (view === 'hidden' && pathname === '/') {
           setView('medium');
         }
       }}
@@ -70,21 +76,13 @@ function App() {
     >
       <TopBar />
 
-      <InjectDialogue />
-
       <ShowRenderer />
     </div>
   );
 }
 
 const ShowRenderer = () => {
-  const addons = useContext(AddonContext);
-
-  const catalog = useMemo(() => {
-    return addons.map((res) => res.loadCatalog()).flat();
-  }, [addons]);
-
-  return <HorizontalWindowList items={catalog} />;
+  return <HorizontalWindowList />;
 };
 
 export default App;

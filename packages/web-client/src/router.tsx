@@ -1,21 +1,48 @@
-import { createBrowserRouter, Outlet } from 'react-router-dom';
+import { createBrowserRouter } from 'react-router-dom';
 import { VideoPlayer } from '@/features/video/components/VideoPlayer';
 import App from '@/App.tsx';
 import SettingsPage from '@/pages/settings.page';
+import React, { Suspense } from 'react';
+import HomePage from '@/pages/home.page';
+import { styletronEngine } from '@/utils/styletron.ts';
+
+// eslint-disable-next-line react-refresh/only-export-components
+const InfoPage = React.lazy(() => import('./pages/info.page'));
 
 export const router = createBrowserRouter([
   {
     path: '',
     element: (
       <>
-        <Outlet />
+        <App />
         <VideoPlayer />
       </>
     ),
     children: [
       {
         path: '',
-        element: <App />,
+        element: <HomePage />,
+      },
+      {
+        path: 'info/:type/:id',
+        element: (
+          <Suspense
+            fallback={
+              <div
+                className={styletronEngine.renderStyle({
+                  minHeight: '120px',
+                })}
+              />
+            }
+          >
+            <InfoPage />
+          </Suspense>
+        ),
+        loader: async () => {
+          await Promise.resolve();
+
+          return null;
+        },
       },
       {
         path: 'player',

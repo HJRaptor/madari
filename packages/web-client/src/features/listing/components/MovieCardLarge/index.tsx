@@ -320,7 +320,7 @@ const MovieCardLarge = forwardRef<
     setIsHoverImageLoaded(true);
   }, []);
 
-  const [active, setActiveCard] = useAtom(activeTitle);
+  const [active] = useAtom(activeTitle);
 
   const isActive = useMemo(() => {
     return (
@@ -347,14 +347,6 @@ const MovieCardLarge = forwardRef<
         height: _props.height.toString() + 'px',
         width: _props.width.toString() + 'px',
       })}
-      onFocus={() => {
-        setActiveCard({
-          index: _props.index,
-          categoryId: _props.listId,
-          id: _props.data.id,
-          data: _props.data,
-        });
-      }}
       data-card-type="show-card"
       data-movie={_props.data.id}
       data-index={_props.index}

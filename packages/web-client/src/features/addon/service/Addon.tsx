@@ -17,6 +17,10 @@ export class Addon {
       url: `${this.config.url}/catalog/${res.type}/top.json`,
     }));
   }
+
+  loadItem(item: { type: string; id: string }) {
+    return `${this.config.url}/meta/${item.type}/${item.id}.json`;
+  }
 }
 
 function capitalizeWords(str: string): string {

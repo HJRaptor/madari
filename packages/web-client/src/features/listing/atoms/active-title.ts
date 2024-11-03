@@ -8,7 +8,7 @@ export const activeTitle = withAtomEffect(
   atom<
     | ({
         categoryId: string;
-        index: number;
+        index?: number;
         id?: string;
       } & {
         data: MovieInfo;

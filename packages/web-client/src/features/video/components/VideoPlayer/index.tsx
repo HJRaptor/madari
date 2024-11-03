@@ -22,11 +22,45 @@ import { generalSettingsAtom } from '@/features/settings/components/atoms/all.ts
 
 export function VideoPlayer() {
   const [css, $theme] = useStyletron();
-
   const [videoState, setVideoState] = useAtom(videoStateAtom);
   const player = useRef<MediaPlayerInstance | null>(null);
-
   const { performance, noAnimation } = useAtomValue(generalSettingsAtom);
+  const pausedBecauseOfBlur = useRef(false);
+
+  useEffect(() => {
+    const blur = () => {
+      if (videoState.playerKind === 'mini') {
+        setVideoState((prev) => {
+          if (prev.isPlaying) {
+            pausedBecauseOfBlur.current = true;
+          }
+
+          return {
+            ...prev,
+            isPlaying: false,
+          };
+        });
+      }
+    };
+
+    const focus = () => {
+      if (pausedBecauseOfBlur.current) {
+        pausedBecauseOfBlur.current = false;
+        setVideoState((prev) => ({
+          ...prev,
+          isPlaying: true,
+        }));
+      }
+    };
+
+    window.addEventListener('focus', focus);
+    window.addEventListener('blur', blur);
+
+    return () => {
+      window.removeEventListener('blur', blur);
+      window.removeEventListener('focus', focus);
+    };
+  }, [setVideoState, videoState.playerKind]);
 
   useEffect(() => {
     if (noAnimation) {
@@ -83,6 +117,7 @@ export function VideoPlayer() {
     return (
       videoState.posterImage && (
         <img
+          alt={videoState.title}
           src={videoState.posterImage}
           className={css({
             position: 'fixed',
