@@ -44,11 +44,6 @@ export const router = createBrowserRouter([
                 <InfoPage />
               </Suspense>
             ),
-            loader: async () => {
-              await Promise.resolve();
-
-              return null;
-            },
           },
         ],
       },

@@ -129,7 +129,6 @@ export default function InfoPage() {
                 navigate(
                   `/player?plugin=${encodeURIComponent(stream.plugin)}&url=${encodeURIComponent(stream.url)}&id=${params.id}&type=${params.type}`,
                 );
-                console.log('Selected stream:', stream);
               }}
             />
           )}

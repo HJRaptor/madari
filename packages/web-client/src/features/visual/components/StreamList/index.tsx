@@ -37,6 +37,8 @@ const StreamList: React.FC<Props> = ({
     return addonContext.filter((res) => res.supportStream);
   }, [addonContext]);
 
+  console.log(streamSupportedAddons);
+
   const streamUrls: { addon: string; url: string }[] = useMemo(() => {
     return streamSupportedAddons.map((res) => {
       return {
@@ -55,7 +57,6 @@ const StreamList: React.FC<Props> = ({
     queries: streamUrls.map((item) => ({
       queryKey: ['streams', item] as QueryKey,
       queryFn: async () => {
-        console.log(item.url);
         return await fetch(item.url, {})
           .then((docs) => docs.json())
           .then((docs: { streams: StreamSource[] }) => {
@@ -68,7 +69,16 @@ const StreamList: React.FC<Props> = ({
     })),
   }).flat();
 
-  const _streams = streams.map((stream) => stream.data).flat();
+  console.log(streams);
+
+  const _streams = useMemo(() => {
+    try {
+      return streams.map((stream) => stream.data).flat();
+    } catch (e) {
+      console.error(e);
+      return [];
+    }
+  }, [streams]);
 
   return (
     <div
