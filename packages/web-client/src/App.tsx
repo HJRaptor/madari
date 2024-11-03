@@ -1,34 +1,11 @@
-import TopBar from '@/features/common/components/TopBar';
 import { useStyletron } from 'baseui';
 import { useEffect } from 'react';
-import HorizontalWindowList from '@/features/listing/components/ShowListContainer';
 import { useAtom } from 'jotai/index';
 import { tileViewAtom } from '@/features/listing/atoms/tiles-view.ts';
-import { useLocation } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 
 function App() {
   const [css, $theme] = useStyletron();
-
-  // const [active, setActive] = useAtom(activeTitle);
-  // const navigate = useNavigate();
-  // const [, setTileView] = useAtom(tileViewAtom);
-
-  // const { pathname } = useLocation();
-
-  // useEffect(() => {
-  //   const keyUp = (ev: KeyboardEvent) => {
-  //     if (ev.key === 'Enter' && active && !pathname.startsWith('/info')) {
-  //       ev.preventDefault();
-  //       setTileView('hidden');
-  //       navigate(`/info/${active.data.type}/${active.data.id}`);
-  //     }
-  //   };
-  //
-  //   document.addEventListener('keyup', keyUp);
-  //   return () => {
-  //     document.removeEventListener('keyup', keyUp);
-  //   };
-  // }, [active, navigate, pathname, setActive, setTileView]);
 
   useEffect(() => {
     const classForBody = css({
@@ -51,6 +28,11 @@ function App() {
 
   const [view, setView] = useAtom(tileViewAtom);
   const { pathname } = useLocation();
+
+  if (pathname.startsWith('/player')) {
+    return <Outlet />;
+  }
+
   return (
     <div
       onWheel={() => {
@@ -74,15 +56,9 @@ function App() {
         background: `linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,.5) 30%, transparent 100%)`,
       })}
     >
-      <TopBar />
-
-      <ShowRenderer />
+      <Outlet />
     </div>
   );
 }
-
-const ShowRenderer = () => {
-  return <HorizontalWindowList />;
-};
 
 export default App;

@@ -1,9 +1,15 @@
+export interface AddonResource {
+  name: string;
+  types: string[];
+  idPrefixes: string[];
+}
+
 export interface AddonConfig {
   id: string;
   version: string;
   name: string;
   description: string;
-  resources: string[];
+  resources: string[] | AddonResource[];
   logo?: string;
   background?: string;
   types: string[];

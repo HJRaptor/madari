@@ -1,4 +1,7 @@
-import { AddonConfig } from '@/features/addon/hooks/use-fetch.tsx';
+import {
+  AddonConfig,
+  AddonResource,
+} from '@/features/addon/hooks/use-fetch.tsx';
 
 export class Addon {
   constructor(
@@ -20,6 +23,41 @@ export class Addon {
 
   loadItem(item: { type: string; id: string }) {
     return `${this.config.url}/meta/${item.type}/${item.id}.json`;
+  }
+
+  get resources() {
+    return this.config.resources.map((res) => {
+      if (typeof res === 'string') {
+        return res;
+      }
+      return res.name;
+    });
+  }
+
+  get streamInfo(): AddonResource | null {
+    return this.config.resources.find((res) => {
+      if (typeof res === 'string') {
+        return null;
+      }
+      return res.name === 'stream';
+    }) as AddonResource;
+  }
+
+  get supportStream(): boolean {
+    return this.resources.indexOf('stream') !== -1;
+  }
+
+  loadStream(item: {
+    type: string;
+    id: string;
+    episode?: number;
+    season?: number;
+  }) {
+    if (item.episode && item.season && item.type === 'series') {
+      return `${this.config.url}/stream/${item.type}/${item.id}:${item.season}:${item.episode}.json`;
+    }
+
+    return `${this.config.url}/stream/${item.type}/${item.id}.json`;
   }
 }
 

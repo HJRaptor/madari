@@ -8,9 +8,18 @@ import { MovieInfo, Video } from '@/features/addon/service/Addon.tsx';
 
 interface Props {
   data: MovieInfo;
+  onEpisodeSelect: (props: { episode: number; season: number }) => void;
 }
 
-const EpisodeList: React.FC<Props> = ({ data }) => {
+const formatDate = (date: Date) => {
+  return new Date(date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+};
+
+const EpisodeList: React.FC<Props> = ({ data, onEpisodeSelect }) => {
   const [css] = useStyletron();
   const [activeSeason, setActiveSeason] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -30,15 +39,6 @@ const EpisodeList: React.FC<Props> = ({ data }) => {
       .filter((video) => video.season === activeSeason)
       .sort((a, b) => a.episode - b.episode);
   }, [data.videos, activeSeason]);
-
-  const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
-  };
-
   const handleScroll = (direction: 'left' | 'right') => {
     const container = containerRef.current;
     if (!container) return;
@@ -100,8 +100,119 @@ const EpisodeList: React.FC<Props> = ({ data }) => {
     );
   };
 
-  const CustomCard = ({ episode }: { episode: Video }) => (
+  return (
     <div
+      className={css({
+        width: '100%',
+        overflow: 'hidden',
+        marginTop: '12px',
+      })}
+    >
+      {seasons.length > 0 && (
+        <div
+          className={css({
+            marginBottom: '12px',
+          })}
+        >
+          <ButtonGroup>
+            {seasons.map((season) => (
+              <Button
+                key={season}
+                onClick={() => {
+                  setActiveSeason(season);
+                }}
+                overrides={{
+                  BaseButton: {
+                    style: {
+                      backgroundColor:
+                        activeSeason === season ? '#e50914' : 'transparent',
+                      opacity: activeSeason === season ? 1 : 0.7,
+                      ':hover': {
+                        backgroundColor:
+                          activeSeason === season
+                            ? '#e50914'
+                            : 'rgba(255,255,255,0.1)',
+                        opacity: 1,
+                      },
+                      ':focus': {
+                        outline: '2px solid white',
+                        outlineOffset: '2px',
+                      },
+                    },
+                  },
+                }}
+              >
+                {getSeasonLabel(season)}
+              </Button>
+            ))}
+          </ButtonGroup>
+        </div>
+      )}
+
+      <div
+        className={css({
+          position: 'relative',
+          width: '100%',
+        })}
+      >
+        <AnimatePresence>
+          {showLeftArrow && <NavigationArrow direction="left" />}
+        </AnimatePresence>
+
+        <div
+          ref={containerRef}
+          onScroll={() => {
+            updateArrowVisibility();
+          }}
+          className={css({
+            display: 'flex',
+            gap: '0px',
+            overflowX: 'auto',
+            scrollBehavior: 'smooth',
+            '::-webkit-scrollbar': {
+              display: 'none',
+            },
+            msOverflowStyle: 'none',
+            scrollbarWidth: 'none',
+          })}
+        >
+          {episodes.map((episode) => (
+            <CustomCard
+              onClick={() => {
+                onEpisodeSelect({
+                  episode: episode.number,
+                  season: episode.season,
+                });
+              }}
+              key={episode.id}
+              episode={episode}
+              data={data}
+            />
+          ))}
+        </div>
+
+        <AnimatePresence>
+          {showRightArrow && <NavigationArrow direction="right" />}
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+};
+
+const CustomCard = ({
+  episode,
+  data,
+  onClick,
+}: {
+  onClick: VoidFunction;
+  episode: Video;
+  data: MovieInfo;
+}) => {
+  const [css] = useStyletron();
+
+  return (
+    <div
+      onClick={onClick}
       className={css({
         flexShrink: 0,
         width: '460px',
@@ -263,95 +374,6 @@ const EpisodeList: React.FC<Props> = ({ data }) => {
         >
           <Play size={16} style={{ marginRight: '8px' }} /> Play Episode
         </Button>
-      </div>
-    </div>
-  );
-
-  return (
-    <div
-      className={css({
-        width: '100%',
-        overflow: 'hidden',
-        marginTop: '12px',
-      })}
-    >
-      {seasons.length > 0 && (
-        <div
-          className={css({
-            marginBottom: '12px',
-          })}
-        >
-          <ButtonGroup>
-            {seasons.map((season) => (
-              <Button
-                key={season}
-                onClick={() => {
-                  setActiveSeason(season);
-                }}
-                overrides={{
-                  BaseButton: {
-                    style: {
-                      backgroundColor:
-                        activeSeason === season ? '#e50914' : 'transparent',
-                      opacity: activeSeason === season ? 1 : 0.7,
-                      margin: '6px',
-                      ':hover': {
-                        backgroundColor:
-                          activeSeason === season
-                            ? '#e50914'
-                            : 'rgba(255,255,255,0.1)',
-                        opacity: 1,
-                      },
-                      ':focus': {
-                        outline: '2px solid white',
-                        outlineOffset: '2px',
-                      },
-                    },
-                  },
-                }}
-              >
-                {getSeasonLabel(season)}
-              </Button>
-            ))}
-          </ButtonGroup>
-        </div>
-      )}
-
-      <div
-        className={css({
-          position: 'relative',
-          width: '100%',
-        })}
-      >
-        <AnimatePresence>
-          {showLeftArrow && <NavigationArrow direction="left" />}
-        </AnimatePresence>
-
-        <div
-          ref={containerRef}
-          onScroll={() => {
-            updateArrowVisibility();
-          }}
-          className={css({
-            display: 'flex',
-            gap: '0px',
-            overflowX: 'auto',
-            scrollBehavior: 'smooth',
-            '::-webkit-scrollbar': {
-              display: 'none',
-            },
-            msOverflowStyle: 'none',
-            scrollbarWidth: 'none',
-          })}
-        >
-          {episodes.map((episode) => (
-            <CustomCard key={episode.id} episode={episode} />
-          ))}
-        </div>
-
-        <AnimatePresence>
-          {showRightArrow && <NavigationArrow direction="right" />}
-        </AnimatePresence>
       </div>
     </div>
   );

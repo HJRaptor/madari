@@ -7,6 +7,7 @@ export const videoStateAtom = atom<{
   playerKind: 'full' | 'mini';
   type?: 'movie' | 'show';
   title?: string;
+  streamUrl?: string[];
 }>({
   isPlaying: false,
   playerKind: 'mini',
