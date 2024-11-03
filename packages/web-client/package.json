@@ -23,6 +23,7 @@
     "lodash": "^4.17.21",
     "lucide-react": "^0.454.0",
     "maverick.js": "^0.43.2",
+    "media-icons": "^0.10.0",
     "pako": "^2.1.0",
     "puppeteer": "10.0.0",
     "react": "^18.3.1",

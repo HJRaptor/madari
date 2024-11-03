@@ -1735,6 +1735,7 @@ __metadata:
     lodash: "npm:^4.17.21"
     lucide-react: "npm:^0.454.0"
     maverick.js: "npm:^0.43.2"
+    media-icons: "npm:^0.10.0"
     pako: "npm:^2.1.0"
     prettier: "npm:^3.3.3"
     puppeteer: "npm:10.0.0"
@@ -5065,6 +5066,13 @@ __metadata:
   version: 1.0.4
   resolution: "media-captions@npm:1.0.4"
   checksum: 10c0/62c6df2909b748284e929fe3d169548b42b91ea79374f67f89a313aa529395b024d5be82056613f3e88ebb2e4a86464f6c6a8d569bc7bae2f5542baa350031ba
+  languageName: node
+  linkType: hard
+
+"media-icons@npm:^0.10.0":
+  version: 0.10.0
+  resolution: "media-icons@npm:0.10.0"
+  checksum: 10c0/5feb41eb47e7d2893eefcf8066e60f86db073787963b736613e07df8fd3f3abb2c7352cdc4167d12f4f091d1ae0304c303782a156b4a07dd83a63ac3b3234771
   languageName: node
   linkType: hard
 

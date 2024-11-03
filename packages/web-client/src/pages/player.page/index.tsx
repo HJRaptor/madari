@@ -5,12 +5,7 @@ import { appSettingsAtom } from '@/atoms/app-settings.ts';
 import { useAtomValue } from 'jotai';
 import { getStreamUrl } from '@/utils/stremio';
 import { useStyletron } from 'baseui';
-import {
-  MediaAnnouncer,
-  MediaPlayer,
-  MediaProvider,
-  Poster,
-} from '@vidstack/react';
+import { MediaPlayer, MediaProvider, MediaSrc, Poster } from '@vidstack/react';
 import {
   defaultLayoutIcons,
   DefaultVideoLayout,
@@ -113,7 +108,39 @@ export default function PlayerPage() {
         crossOrigin
         playsInline
         autoPlay={true}
-        src={state.urls.map((res) => ({ src: res }) as never)}
+        src={
+          state.urls.map((res) => {
+            if (res.endsWith('.m3u8')) {
+              return {
+                src: res,
+                type: 'application/vnd.apple.mpegurl',
+              };
+            }
+
+            if (res.endsWith('.mpd')) {
+              return {
+                src: res,
+                type: 'application/dash+xml',
+              };
+            }
+
+            if (res.endsWith('.mp4')) {
+              return {
+                src: res,
+                type: 'video/mp4',
+              };
+            }
+
+            if (res.endsWith('.webm')) {
+              return {
+                src: res,
+                type: 'video/webm',
+              };
+            }
+
+            return { src: res, type: '' };
+          }) as MediaSrc[]
+        }
       >
         <MediaProvider>
           <Poster
@@ -121,7 +148,6 @@ export default function PlayerPage() {
             src={`https://images.metahub.space/background/medium/${id}/img`}
           />
         </MediaProvider>
-        <MediaAnnouncer />
         <DefaultVideoLayout icons={defaultLayoutIcons} />
       </MediaPlayer>
     </div>
