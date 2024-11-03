@@ -14,6 +14,10 @@ import AppSkeleton from '@/features/common/components/Loader';
 import { RouterProvider } from 'react-router-dom';
 import { router } from '@/router.tsx';
 import { ToasterContainer } from 'baseui/toast';
+import { init } from '@noriginmedia/norigin-spatial-navigation';
+
+// initialize keyboard navigation
+init({});
 
 const root = document.getElementById('root');
 
