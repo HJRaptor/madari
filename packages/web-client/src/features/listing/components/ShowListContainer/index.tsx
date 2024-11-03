@@ -273,7 +273,7 @@ const VerticalWindowList: React.FC<VerticalWindowListProps> = ({
         };
       case 'medium':
         return {
-          transform: 'translateY(calc(34vh))',
+          transform: 'translateY(min(34vh, calc(100vh - 820px)))',
         };
       case 'full':
         return {

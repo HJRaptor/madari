@@ -178,9 +178,6 @@ const AddonManager: React.FC = () => {
       className={css({
         paddingLeft: '2rem',
         paddingRight: '2rem',
-        paddingTop: '94px',
-        backgroundColor: '#141414',
-        minHeight: 'calc(100vh - 94px)',
       })}
     >
       <div
