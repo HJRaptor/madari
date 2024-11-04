@@ -306,7 +306,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         dashPlayerRef.current = null;
       }
     };
-  }, [sources, autoPlay]);
+  }, [sources, autoPlay, duration]);
 
   // Handle fullscreen changes
   useEffect(() => {

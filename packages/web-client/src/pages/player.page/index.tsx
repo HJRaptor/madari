@@ -1,13 +1,26 @@
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { AddonContext } from '@/features/addon/providers/AddonContext.ts';
 import { appSettingsAtom } from '@/atoms/app-settings.ts';
 import { useAtomValue } from 'jotai';
 import { getStreamUrl } from '@/utils/stremio';
 import { useStyletron } from 'baseui';
+import {
+  isDASHProvider,
+  MediaPlayer,
+  MediaPlayerInstance,
+  MediaProvider,
+  MediaProviderAdapter,
+  MediaSrc,
+  Poster,
+} from '@vidstack/react';
+import {
+  defaultLayoutIcons,
+  DefaultVideoLayout,
+} from '@vidstack/react/player/layouts/default';
 import { Button } from 'baseui/button';
 import { ArrowLeft } from 'lucide-react';
-import VideoPlayer from '@/features/video/components/DashPlayer';
+import DASH from 'dashjs';
 
 export default function PlayerPage() {
   const [searchParams] = useSearchParams();
@@ -51,8 +64,14 @@ export default function PlayerPage() {
               return null;
             }
 
+            const sortedUrls = docs.sort((a, b) => {
+              const extA = a.split('.').pop();
+              const extB = b.split('.').pop();
+              return sortOrder[extA as never] - sortOrder[extB as never];
+            });
+
             setState({
-              urls: sortVideoFormats(docs),
+              urls: sortedUrls,
             });
           })
           .catch((e: unknown) => {
@@ -67,6 +86,10 @@ export default function PlayerPage() {
       }
     }
   }, [appSettings.addons, id, suppliedAddon?.installUrl, type, url]);
+
+  const ref = useRef<MediaPlayerInstance>(null);
+
+  const [seekTime, setSeekTime] = useState(0);
 
   return (
     <div
@@ -89,44 +112,89 @@ export default function PlayerPage() {
           <ArrowLeft />
         </Button>
       </div>
+      <MediaPlayer
+        ref={ref}
+        onSeeking={(ev) => {
+          const t = Math.floor(ev);
+          setSeekTime(t);
+        }}
+        className={css({
+          height: '100vh',
+          position: 'fixed',
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          backgroundColor: $theme.colors.backgroundPrimary,
+        })}
+        viewType="video"
+        streamType="on-demand"
+        crossOrigin
+        playsInline
+        onProviderSetup={onProviderSetup}
+        autoPlay={true}
+        onProviderChange={onProviderChange}
+        src={
+          state.urls.map((res) => {
+            if (res.endsWith('.m3u8')) {
+              return {
+                src: res,
+                type: 'application/vnd.apple.mpegurl',
+              };
+            }
 
-      <VideoPlayer
-        sources={[
-          {
-            url: state.urls[0],
-            quality: 'HD',
-            bitrate: 9,
-          },
-        ]}
-      ></VideoPlayer>
+            if (res.endsWith('.mpd')) {
+              return {
+                src: res + '?t=' + seekTime.toString(),
+                type: 'application/dash+xml',
+              };
+            }
+
+            if (res.endsWith('.mp4')) {
+              return {
+                src: res,
+                type: 'video/mp4',
+              };
+            }
+
+            if (res.endsWith('.webm')) {
+              return {
+                src: res,
+                type: 'video/webm',
+              };
+            }
+
+            return { src: res, type: '' };
+          }) as MediaSrc[]
+        }
+      >
+        <MediaProvider>
+          <Poster
+            className="vds-poster"
+            src={`https://images.metahub.space/background/medium/${id}/img`}
+          />
+        </MediaProvider>
+        <DefaultVideoLayout icons={defaultLayoutIcons} />
+      </MediaPlayer>
     </div>
   );
 }
 
-const sortVideoFormats = (urls: string[]) => {
-  // Define format priorities (lower number = higher priority)
-  const formatPriorities = {
-    mpd: 0,
-    m3u8: 1,
-    webm: 2,
-    mp4: 3,
-  };
+function onProviderChange(provider: MediaProviderAdapter | null) {
+  if (isDASHProvider(provider)) {
+    provider.library = DASH;
+  }
+}
 
-  return urls.sort((a, b) => {
-    // Extract file extensions from URLs
-    const formatA = a.split('.').pop()?.toLowerCase();
-    const formatB = b.split('.').pop()?.toLowerCase();
-
-    // Get priorities (default to highest number if format not found)
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error okasokas
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const priorityA = formatPriorities[formatA] ?? Number.MAX_VALUE;
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error okasokas
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const priorityB = formatPriorities[formatB] ?? Number.MAX_VALUE;
-
-    return priorityA - priorityB;
-  });
+function onProviderSetup(provider: MediaProviderAdapter) {
+  if (isDASHProvider(provider)) {
+    console.log(provider.ctor); // `dashjs` constructor
+    console.log(provider.instance); // `dashjs` instance
+  }
+}
+const sortOrder: Record<string, number> = {
+  mpd: 0,
+  m3u8: 1,
+  webm: 2,
+  mp4: 3,
 };
