@@ -71,7 +71,6 @@ const SimpleMovieCard = forwardRef<
       ref={ref}
       onClick={() => {
         if (isActive) {
-          console.log(isActive, 'test');
           navigate(`/info/${active?.data.type}/${active?.data.id}`);
         } else {
           setActiveCard({

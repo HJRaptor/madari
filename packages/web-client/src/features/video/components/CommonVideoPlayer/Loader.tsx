@@ -57,7 +57,7 @@ const LoaderComponent: React.FC<{ buffering: boolean }> = ({ buffering }) => {
     alignItems: 'center',
     zIndex: 9999,
     opacity: 0,
-    transition: 'opacity 0.3s ease',
+    transition: 'opacity 0.1s ease',
   });
 
   const spinnerContainerStyles = css({
@@ -65,7 +65,7 @@ const LoaderComponent: React.FC<{ buffering: boolean }> = ({ buffering }) => {
     width: '64px',
     height: '64px',
     transform: 'scale(0.5)',
-    transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    transition: 'transform 0.1s cubic-bezier(0.4, 0, 0.2, 1)',
   });
 
   const spinnerStyles = css({

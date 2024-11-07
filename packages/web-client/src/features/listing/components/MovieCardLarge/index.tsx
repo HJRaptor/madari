@@ -122,7 +122,6 @@ const CastMember = memo(({ actor, isLast }: CastMemberProps) => {
       <button
         onClick={(e) => {
           e.stopPropagation();
-          console.log(`Clicked on ${actor.name}`);
         }}
         className={css({
           color: 'rgba(255, 255, 255, 0.9)',

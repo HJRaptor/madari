@@ -1,4 +1,5 @@
 import {
+  ArrowLeft,
   Forward as Forward10,
   Pause,
   Play,
@@ -34,6 +35,9 @@ import { UseDashPlayerReturn } from '@/features/video/hooks/use-dash-player.ts';
 import { useManifestUrl } from '@/features/video/hooks/use-manifest-url.ts';
 import VideoControls from '@/features/video/components/CommonVideoPlayer/Controls.tsx';
 import LoaderComponent from '@/features/video/components/CommonVideoPlayer/Loader.tsx';
+import { Button } from 'baseui/button';
+import { useStyletron } from 'baseui';
+import { useNavigate } from 'react-router-dom';
 
 const CommonVideoPlayer = forwardRef<
   HTMLVideoElement,
@@ -100,8 +104,32 @@ const CommonVideoPlayer = forwardRef<
       };
     }, [isPlaying]);
 
+    const [css] = useStyletron();
+
+    const navigate = useNavigate();
+
     return (
       <Container>
+        {showControls && (
+          <div
+            className={css({
+              position: 'fixed',
+              top: '12px',
+              left: '12px',
+              zIndex: 1,
+            })}
+          >
+            <Button
+              kind="tertiary"
+              shape="circle"
+              onClick={() => {
+                navigate(-1);
+              }}
+            >
+              <ArrowLeft />
+            </Button>
+          </div>
+        )}
         <VideoWrapper>
           <LoaderComponent buffering={buffering} />
           <Video ref={ref} poster="" />
