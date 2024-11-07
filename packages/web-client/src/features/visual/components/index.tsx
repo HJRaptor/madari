@@ -143,6 +143,11 @@ export function VisualViewer() {
     lineHeight: '1.75',
     opacity: 0.9,
     marginBottom: theme.sizing.scale600,
+    display: '-webkit-box',
+    WebkitLineClamp: '2',
+    WebkitBoxOrient: 'vertical',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   });
 
   const genresContainerStyles = css({
