@@ -63,7 +63,7 @@ const ItemRenderer = memo(
     const modifiedStyle = {
       ...style,
       left: `${PADDING_X}px`,
-      width: `calc(100% - ${PADDING_X * 2}px)`,
+      width: `calc(100% - ${PADDING_X * 2}px - 24px)`,
     };
 
     const { data } = useQuery({

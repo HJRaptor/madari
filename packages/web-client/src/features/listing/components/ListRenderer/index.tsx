@@ -91,7 +91,7 @@ const ListRenderer: React.FC<ListRendererProps> = ({
 
   const containerStyle = css({
     position: 'relative',
-    width: '100%',
+    width: 'calc(100% - 24px)',
     // Prevent horizontal scroll bounce on Safari
     overscrollBehaviorX: 'contain',
   });
