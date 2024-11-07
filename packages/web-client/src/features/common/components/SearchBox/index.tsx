@@ -2,12 +2,20 @@ import { useStyletron } from 'baseui';
 import { useIntl } from 'react-intl';
 import { Button } from 'baseui/button';
 import xCircle from '@/icons/x-mark.svg';
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useSearchHistory } from '@/features/common/hooks/use-search-history';
 import { Search } from 'baseui/icon';
 import { Input } from 'baseui/input';
 import { Trash2, X } from 'lucide-react';
 import { StyleObject } from 'styletron-react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 export interface SearchBoxProps {
   isActive: boolean;
@@ -187,6 +195,10 @@ export default function SearchBox(props: SearchBoxProps) {
       .slice(0, 10);
   }, [searchTerm, searchHistory]);
 
+  const [, setSearchParams] = useSearchParams();
+
+  const navigate = useNavigate();
+
   // Memoize search handler
   const handleSearch = useCallback(() => {
     const termToSearch =
@@ -195,8 +207,10 @@ export default function SearchBox(props: SearchBoxProps) {
       addToHistory(termToSearch);
       setIsOpen(false);
       setSearchTerm(termToSearch);
+
+      navigate(`/search?q=${termToSearch}`);
     }
-  }, [selectedIndex, suggestions, searchTerm, addToHistory]);
+  }, [selectedIndex, suggestions, searchTerm, addToHistory, setSearchParams]);
 
   // Handle item removal
   const handleRemoveItem = useCallback(

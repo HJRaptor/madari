@@ -2,7 +2,7 @@ import { useStyletron } from 'baseui';
 import { Button } from 'baseui/button';
 import { Suspense, useContext, useEffect, useMemo, useState } from 'react';
 import { CircleArrowLeft } from 'lucide-react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useAtom } from 'jotai/index';
 import { tileViewAtom } from '@/features/listing/atoms/tiles-view.ts';
 import { AddonContext } from '@/features/addon/providers/AddonContext.ts';
@@ -97,14 +97,14 @@ export default function InfoPage() {
       <Button
         startEnhancer={<CircleArrowLeft />}
         kind="secondary"
-        $as={Link}
         onClick={(e) => {
           if (selected) {
             e.preventDefault();
             setSelected(undefined);
+          } else {
+            navigate(-1);
           }
         }}
-        to="/"
       >
         Back
       </Button>

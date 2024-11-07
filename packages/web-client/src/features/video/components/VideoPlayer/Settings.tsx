@@ -150,7 +150,9 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({
       {availableQualities && Object.keys(availableQualities).length > 0 && (
         <div
           className={menuItemStyles}
-          onClick={() => setActiveSection('quality')}
+          onClick={() => {
+            setActiveSection('quality');
+          }}
           role="button"
           tabIndex={0}
         >
@@ -164,7 +166,9 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({
       {audioTracks && audioTracks.length > 0 && (
         <div
           className={menuItemStyles}
-          onClick={() => setActiveSection('audio')}
+          onClick={() => {
+            setActiveSection('audio');
+          }}
           role="button"
           tabIndex={0}
         >
@@ -179,7 +183,9 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({
       {subtitleTracks && subtitleTracks.length > 0 && (
         <div
           className={menuItemStyles}
-          onClick={() => setActiveSection('subtitles')}
+          onClick={() => {
+            setActiveSection('subtitles');
+          }}
           role="button"
           tabIndex={0}
         >
@@ -200,7 +206,9 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({
     <>
       <div className={headerStyles}>
         <button
-          onClick={() => setActiveSection('main')}
+          onClick={() => {
+            setActiveSection('main');
+          }}
           className={backButtonStyles}
         >
           <ChevronLeft size={16} />
@@ -211,7 +219,9 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({
         <div
           key={value}
           className={menuItemStyles}
-          onClick={() => handleQualitySelect(value)}
+          onClick={() => {
+            handleQualitySelect(value);
+          }}
           role="button"
           tabIndex={0}
           style={{
@@ -236,7 +246,9 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({
     <>
       <div className={headerStyles}>
         <button
-          onClick={() => setActiveSection('main')}
+          onClick={() => {
+            setActiveSection('main');
+          }}
           className={backButtonStyles}
         >
           <ChevronLeft size={16} />
@@ -247,7 +259,9 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({
         <div
           key={track.id}
           className={menuItemStyles}
-          onClick={() => handleAudioSelect(track.id)}
+          onClick={() => {
+            handleAudioSelect(track.id);
+          }}
           role="button"
           tabIndex={0}
           style={{
@@ -267,7 +281,9 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({
     <>
       <div className={headerStyles}>
         <button
-          onClick={() => setActiveSection('main')}
+          onClick={() => {
+            setActiveSection('main');
+          }}
           className={backButtonStyles}
         >
           <ChevronLeft size={16} />
@@ -276,7 +292,9 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({
       </div>
       <div
         className={menuItemStyles}
-        onClick={() => handleSubtitleSelect('off')}
+        onClick={() => {
+          handleSubtitleSelect('off');
+        }}
         role="button"
         tabIndex={0}
         style={{
@@ -290,7 +308,9 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({
         <div
           key={track.id}
           className={menuItemStyles}
-          onClick={() => handleSubtitleSelect(track.id)}
+          onClick={() => {
+            handleSubtitleSelect(track.id);
+          }}
           role="button"
           tabIndex={0}
           style={{

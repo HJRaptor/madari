@@ -19,7 +19,7 @@ export const activeTitle = withAtomEffect(
   (get, set) => {
     const val = get(activeTitle);
 
-    if (val && val.data) {
+    if (val && val.data && val.data.trailers?.length) {
       set(tileViewAtom, 'medium');
       set(videoStateAtom, {
         isPlaying: true,

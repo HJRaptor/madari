@@ -13,12 +13,31 @@ export class Addon {
     title: string;
     url: string;
     id: string;
+    type: string;
   }[] {
-    return this.config.catalogs.map((res) => ({
-      id: `${this.config.id}/${res.type}/${res.name}`,
-      title: capitalizeWords(`${res.name} ${res.type}`),
-      url: `${this.config.url}/catalog/${res.type}/top.json`,
-    }));
+    return this.config.catalogs.map((res) => {
+      return {
+        id: `${this.config.id}/${res.type}/${res.name}`,
+        title: capitalizeWords(`${res.name} ${res.type}`),
+        type: res.type,
+        url: `${this.config.url}/catalog/${res.type}/${res.id}.json`,
+      };
+    });
+  }
+
+  search(query: string) {
+    return this.config.catalogs
+      .filter((res) =>
+        res.extra?.find((extraItem) => extraItem.name === 'search'),
+      )
+      .map((res) => {
+        return {
+          id: `${this.config.id}/${res.type}/${res.name}`,
+          title: capitalizeWords(`${res.name} ${res.type}`),
+          type: res.type,
+          url: `${this.config.url}/catalog/${res.type}/${res.id}/search=${encodeURIComponent(query)}.json`,
+        };
+      });
   }
 
   loadItem(item: { type: string; id: string }) {

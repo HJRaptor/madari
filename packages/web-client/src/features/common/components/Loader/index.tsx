@@ -124,7 +124,6 @@ const AppSkeleton = () => {
                 Root: {
                   style: {
                     backgroundColor: '#333',
-                    borderRadius: '4px',
                   },
                 },
               }}

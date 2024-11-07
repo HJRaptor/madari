@@ -7,6 +7,7 @@ import { styletronEngine } from '@/utils/styletron.ts';
 import HomeWrapperPage from '@/pages/home-wrapper.page';
 import PlayerPage from '@/pages/player.page';
 import MiniVideoPlayer from './features/video/components/MiniVideoPlayer';
+import SearchPage from '@/pages/search.page';
 
 // eslint-disable-next-line react-refresh/only-export-components
 const InfoPage = React.lazy(() => import('./pages/info.page'));
@@ -46,6 +47,10 @@ export const router = createBrowserRouter([
                 <InfoPage />
               </Suspense>
             ),
+          },
+          {
+            path: 'search',
+            element: <SearchPage />,
           },
           {
             path: 'discovery',

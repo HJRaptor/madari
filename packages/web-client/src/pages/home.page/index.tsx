@@ -22,7 +22,7 @@ import { HeadingMedium } from 'baseui/typography';
 import { Button } from 'baseui/button';
 import { FormattedMessage } from 'react-intl';
 import ListRenderer from '@/features/listing/components/ListRenderer';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 const PADDING_X = 24;
 
@@ -152,9 +152,27 @@ export default function HomePage() {
     });
   }, [setTileView]);
 
-  const items = useMemo(() => {
+  const [searchParams] = useSearchParams();
+
+  const path = useLocation();
+
+  const items_ = useMemo(() => {
+    if (path.pathname.startsWith('/search')) {
+      return addons
+        .map((res) => res.search(searchParams.get('q') ?? ''))
+        .flat();
+    }
+
     return addons.map((res) => res.loadCatalog()).flat();
-  }, [addons]);
+  }, [addons, path.pathname, searchParams]);
+
+  const types = searchParams.getAll('type');
+
+  const items = useMemo(() => {
+    return items_.filter((item) => {
+      return types.indexOf(item.type) !== -1 || types.length === 0;
+    });
+  }, [items_, types]);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<List>(null);

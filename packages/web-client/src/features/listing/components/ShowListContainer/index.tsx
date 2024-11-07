@@ -46,7 +46,7 @@ const VerticalWindowList: React.FC = () => {
       case 'hidden':
         if (path.pathname.startsWith('/info')) {
           return {
-            transform: 'translateY(min(34vh, calc(100vh - 420px)))',
+            transform: 'translateY(min(38vh, calc(100vh - 420px)))',
           };
         }
         return {
@@ -55,7 +55,7 @@ const VerticalWindowList: React.FC = () => {
       case 'medium':
         if (path.pathname.startsWith('/info')) {
           return {
-            transform: 'translateY(calc(100vh - 720px))',
+            transform: 'translateY(calc(100vh - 820px))',
           };
         }
 

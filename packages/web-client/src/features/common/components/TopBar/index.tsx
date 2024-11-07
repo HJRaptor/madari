@@ -4,8 +4,8 @@ import { Button } from 'baseui/button';
 import { ButtonGroup } from 'baseui/button-group';
 import { Search } from 'baseui/icon';
 import SearchBox from '@/features/common/components/SearchBox';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 
 export default function TopBar() {
   const [css] = useStyletron();
@@ -22,9 +22,39 @@ export default function TopBar() {
     buttonRefs.current[0]?.focus();
   }, []);
 
+  const [searchParams] = useSearchParams();
+
   const navigate = useNavigate();
 
   const location = useLocation();
+
+  const firstMatch = useMemo(() => {
+    return NavigationRouteData.map((item) => {
+      const url = new URL(
+        window.location.protocol + '//' + window.location.hostname + item.key,
+      );
+
+      const matchAllQueryParams = Array.from(url.searchParams.keys()).every(
+        (res) => {
+          return searchParams.get(res) === url.searchParams.get(res);
+        },
+      );
+
+      const isPathNameMatch = url.pathname === location.pathname;
+
+      if (matchAllQueryParams && url.searchParams.size !== 0) {
+        return {
+          priority: 2,
+          key: item.key,
+        };
+      }
+
+      return {
+        key: item.key,
+        priority: isPathNameMatch ? 1 : 0,
+      };
+    }).sort((res1, res2) => res2.priority - res1.priority)[0];
+  }, [location.pathname, searchParams]);
 
   return (
     <>
@@ -65,19 +95,21 @@ export default function TopBar() {
             <Search size={28} />
           </Button>
           <ButtonGroup shape="pill" kind="secondary">
-            {NavigationRouteData.map((item, index) => (
-              <Button
-                onClick={() => {
-                  navigate(item.key);
-                }}
-                isSelected={location.pathname === item.key}
-                startEnhancer={item.icon}
-                key={item.key}
-                ref={(el: never) => (buttonRefs.current[index + 1] = el)}
-              >
-                {item.title}
-              </Button>
-            ))}
+            {NavigationRouteData.map((item, index) => {
+              return (
+                <Button
+                  onClick={() => {
+                    navigate(item.key);
+                  }}
+                  isSelected={firstMatch?.key === item.key}
+                  startEnhancer={item.icon}
+                  key={item.key}
+                  ref={(el: never) => (buttonRefs.current[index + 1] = el)}
+                >
+                  {item.title}
+                </Button>
+              );
+            })}
           </ButtonGroup>
         </div>
       </div>
