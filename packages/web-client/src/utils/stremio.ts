@@ -15,6 +15,22 @@ interface RealDebridFile {
   id: string;
 }
 
+export interface AudioStreamInfo {
+  id: string;
+  stream: string;
+  lang: string;
+  lang_iso: string;
+  codec: string;
+}
+
+export interface SubtitlesInfo {
+  id: string;
+  stream: string;
+  lang: string;
+  lang_iso: string;
+  type: string;
+}
+
 export async function getStreamUrl(
   apiToken: string,
   url: string,
@@ -24,7 +40,13 @@ export async function getStreamUrl(
     limit: 100,
     pageSize: 100,
   },
-): Promise<string[] | null> {
+): Promise<{
+  audios: AudioStreamInfo[];
+  subtitles: SubtitlesInfo[];
+  formats: Record<string, string>;
+  qualities: Record<string, string>;
+  url: string;
+} | null> {
   if (!url || !apiToken) {
     throw new RealDebridError('URL and API token are required');
   }
@@ -32,6 +54,7 @@ export async function getStreamUrl(
   await fetch(url, {
     method: 'HEAD',
   }).catch((_e: unknown) => {
+    // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
     console.log('ignoring ' + _e);
   });
 
@@ -136,14 +159,68 @@ export async function getStreamUrl(
       return null;
     }
 
-    // Get streaming URL
-    return await makeRequest<{ data: { [record: string]: { full: string } } }>(
-      `https://api.real-debrid.com/rest/1.0/streaming/transcode/${fileId}`,
-      { method: 'GET' },
-    ).then((docs) => {
-      return Object.values(docs.data).map((res) => res.full);
-    });
+    const [meta] = await Promise.all([
+      makeRequest<{
+        data: {
+          modelUrl: string;
+          availableFormats: Record<string, string>;
+          availableQualities: Record<string, string>;
+          details: {
+            audio: Record<
+              string,
+              {
+                stream: string;
+                lang: string;
+                lang_iso: string;
+                codec: string;
+                sampling: number;
+                channels: number;
+              }
+            >;
+            subtitles: Record<
+              string,
+              {
+                stream: string;
+                lang: string;
+                lang_iso: string;
+                type: string;
+              }
+            >;
+          };
+        };
+      }>(
+        `https://api.real-debrid.com/rest/1.0/streaming/mediaInfos/${fileId}`,
+        { method: 'GET' },
+      ),
+    ]);
+
+    return {
+      audios: Object.entries(meta.data.details?.audio ?? {}).map(
+        ([id, audio]) => {
+          return {
+            id,
+            stream: audio.stream,
+            codec: audio.codec,
+            lang: audio.lang,
+            lang_iso: audio.lang_iso,
+          };
+        },
+      ),
+      formats: meta.data.availableFormats,
+      qualities: meta.data.availableQualities,
+      url: meta.data.modelUrl,
+      subtitles: Object.entries(meta.data.details?.subtitles ?? {}).map(
+        ([id, item]) => ({
+          id,
+          stream: item.stream,
+          lang_iso: item.lang_iso,
+          lang: item.lang,
+          type: item.type,
+        }),
+      ),
+    };
   } catch (error) {
+    console.log(error);
     if (error instanceof RealDebridError) {
       throw error;
     }

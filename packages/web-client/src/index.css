@@ -4,6 +4,10 @@ html {
     padding: 0;
 }
 
+:root {
+    --video-border-radius: 0px;
+}
+
 body {
     min-height: 100vh;
 }

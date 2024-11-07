@@ -13,12 +13,12 @@ export const NavigationRouteData: {
     icon: <HomeIcon />,
   },
   {
-    key: '/movies',
+    key: '/discovery?type=movies',
     icon: <VideoIcon />,
     title: <FormattedMessage defaultMessage="Movies" />,
   },
   {
-    key: '/shows',
+    key: '/discovery?type=shows',
     icon: <VideotapeIcon />,
     title: <FormattedMessage defaultMessage="Shows" />,
   },

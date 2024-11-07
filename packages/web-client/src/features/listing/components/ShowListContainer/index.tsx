@@ -53,6 +53,12 @@ const VerticalWindowList: React.FC = () => {
           transform: 'translateY(calc(100vh - 420px))',
         };
       case 'medium':
+        if (path.pathname.startsWith('/info')) {
+          return {
+            transform: 'translateY(calc(100vh - 720px))',
+          };
+        }
+
         return {
           transform: 'translateY(min(34vh, calc(100vh - 820px)))',
         };

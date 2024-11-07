@@ -1,11 +1,20 @@
-import React, { useContext, useMemo } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useStyletron } from 'baseui';
 import { Button } from 'baseui/button';
-import { ExternalLink, Play } from 'lucide-react';
-import { MovieInfo } from '@/features/addon/service/Addon.tsx';
+import { ChevronLeft, ChevronRight, ExternalLink, Play } from 'lucide-react';
+import { MovieInfo } from '@/features/addon/service/Addon';
 import { QueryKey, useSuspenseQueries } from '@tanstack/react-query';
-import { AddonContext } from '@/features/addon/providers/AddonContext.ts';
+import { AddonContext } from '@/features/addon/providers/AddonContext';
 import { HeadingSmall } from 'baseui/typography';
+import DOMPurify from 'dompurify';
+import { Layer } from 'baseui/layer';
+import { StyleObject } from 'styletron-react';
 
 interface StreamSource {
   name: string;
@@ -24,6 +33,8 @@ interface Props {
   season?: number;
 }
 
+const SCROLL_AMOUNT = 400;
+
 const StreamList: React.FC<Props> = ({
   onStreamSelect,
   season,
@@ -31,6 +42,9 @@ const StreamList: React.FC<Props> = ({
   movie,
 }) => {
   const [css] = useStyletron();
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [showLeftScroll, setShowLeftScroll] = useState(false);
+  const [showRightScroll, setShowRightScroll] = useState(true);
 
   const addonContext = useContext(AddonContext);
 
@@ -38,32 +52,28 @@ const StreamList: React.FC<Props> = ({
     return addonContext.filter((res) => res.supportStream);
   }, [addonContext]);
 
-  const streamUrls: { addon: string; url: string }[] = useMemo(() => {
-    return streamSupportedAddons.map((res) => {
-      return {
-        addon: res.config.id,
-        url: res.loadStream({
-          episode,
-          season,
-          type: movie.type,
-          id: movie.id,
-        }),
-      };
-    });
+  const streamUrls = useMemo(() => {
+    return streamSupportedAddons.map((res) => ({
+      addon: res.config.id,
+      url: res.loadStream({
+        episode,
+        season,
+        type: movie.type,
+        id: movie.id,
+      }),
+    }));
   }, [episode, movie.id, movie.type, season, streamSupportedAddons]);
 
   const streams = useSuspenseQueries({
     queries: streamUrls.map((item) => ({
       queryKey: ['streams', item] as QueryKey,
       queryFn: async () => {
-        return await fetch(item.url, {})
-          .then((docs) => docs.json())
-          .then((docs: { streams: StreamSource[] }) => {
-            return docs.streams.map((res) => ({
-              ...res,
-              plugin: item.addon,
-            }));
-          });
+        const response = await fetch(item.url);
+        const data = (await response.json()) as { streams: StreamSource[] };
+        return data.streams.map((res: StreamSource) => ({
+          ...res,
+          plugin: item.addon,
+        }));
       },
     })),
   }).flat();
@@ -77,47 +87,137 @@ const StreamList: React.FC<Props> = ({
     }
   }, [streams]);
 
+  const updateScrollButtons = useCallback(() => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } =
+        scrollContainerRef.current;
+      setShowLeftScroll(scrollLeft > 0);
+      setShowRightScroll(scrollLeft < scrollWidth - clientWidth - 10);
+    }
+  }, []);
+
+  const scroll = useCallback((direction: 'left' | 'right') => {
+    if (scrollContainerRef.current) {
+      const scrollAmount =
+        direction === 'left' ? -SCROLL_AMOUNT : SCROLL_AMOUNT;
+      scrollContainerRef.current.scrollBy({
+        left: scrollAmount,
+        behavior: 'smooth',
+      });
+    }
+  }, []);
+
   if (_streams.length === 0) {
     return (
-      <div
-        className={css({
-          width: '100%',
-        })}
-      >
+      <div className={css({ width: '100%' })}>
         <HeadingSmall>
-          No streams available please install plugin to provide the streams.
-          Available plugins {streamSupportedAddons.length}.
+          No streams available. Please install plugins to provide streams.
+          Available plugins: {streamSupportedAddons.length}
         </HeadingSmall>
       </div>
     );
   }
 
+  const scrollButtonStyle: StyleObject = {
+    width: '40px',
+    height: '40px',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    color: 'white',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    ':hover': {
+      backgroundColor: 'rgba(0, 0, 0, 0.9)',
+      borderColor: 'white',
+      transform: 'scale(1.1)',
+    },
+  };
+
   return (
     <div
       className={css({
         width: '100%',
-        marginTop: '24px',
+        position: 'relative',
+        marginTop: '8px',
       })}
     >
+      {showLeftScroll && (
+        <Layer>
+          <div
+            className={css({
+              position: 'absolute',
+              left: '-20px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              zIndex: 2,
+            })}
+          >
+            <Button
+              onClick={() => {
+                scroll('left');
+              }}
+              overrides={{
+                BaseButton: {
+                  style: scrollButtonStyle,
+                },
+              }}
+            >
+              <ChevronLeft size={20} />
+            </Button>
+          </div>
+        </Layer>
+      )}
+
+      {showRightScroll && (
+        <Layer>
+          <div
+            className={css({
+              position: 'absolute',
+              right: '-20px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              zIndex: 2,
+            })}
+          >
+            <Button
+              onClick={() => {
+                scroll('right');
+              }}
+              overrides={{
+                BaseButton: {
+                  style: scrollButtonStyle,
+                },
+              }}
+            >
+              <ChevronRight size={20} />
+            </Button>
+          </div>
+        </Layer>
+      )}
+
       <div
+        ref={scrollContainerRef}
+        onScroll={updateScrollButtons}
         className={css({
-          gap: '16px',
-          width: '100%',
           display: 'flex',
+          gap: '12px',
           overflowX: 'auto',
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+          padding: '4px',
+          '::-webkit-scrollbar': {
+            display: 'none',
+          },
         })}
       >
-        {_streams.map((stream, index) => {
-          return (
-            <StreamCard
-              onClick={() => {
-                onStreamSelect?.(stream);
-              }}
-              key={index}
-              stream={stream}
-            />
-          );
-        })}
+        {_streams.map((stream, index) => (
+          <StreamCard
+            key={index}
+            stream={stream}
+            onClick={() => onStreamSelect?.(stream)}
+          />
+        ))}
       </div>
     </div>
   );
@@ -131,124 +231,158 @@ const StreamCard = ({
   onClick: VoidFunction;
 }) => {
   const [css] = useStyletron();
+  const [isHovered, setIsHovered] = useState(false);
+
+  const sanitizedTitle = useMemo(() => {
+    const cleanTitle = DOMPurify.sanitize(stream.title);
+    return cleanTitle.split('\n').join('<br/>');
+  }, [stream.title]);
 
   return (
     <div
-      onClick={() => {
-        onClick();
+      onClick={onClick}
+      onMouseEnter={() => {
+        setIsHovered(true);
+      }}
+      onMouseLeave={() => {
+        setIsHovered(false);
       }}
       className={css({
+        width: '340px',
+        height: '180px',
+        backgroundColor: '#333',
+        borderRadius: '12px',
+        padding: '16px',
         flexShrink: 0,
-        width: '360px',
-        height: '260px',
-        marginTop: '10px',
-        marginBottom: '10px',
-        borderRadius: '20px',
-        marginLeft: '4px',
-        overflow: 'hidden',
-        position: 'relative',
-        transition: 'all 0.3s ease',
-        outline: 'none',
-        opacity: 0.85,
         display: 'flex',
         flexDirection: 'column',
-        padding: '16px',
-        backgroundColor: '#333',
+        position: 'relative',
+        transition: 'all 0.3s ease',
+        cursor: 'pointer',
+        opacity: isHovered ? 1 : 0.85,
         ':hover': {
-          cursor: 'pointer',
-          opacity: 1,
           backgroundColor: '#1a1a1a',
-        },
-        ':focus-within': {
-          outline: '2px solid white',
-          outlineOffset: '2px',
-          opacity: 1,
+          transform: 'translateY(-4px)',
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
         },
       })}
     >
+      {/* Stream Details */}
+      <div className={css({ position: 'relative', zIndex: 1 })}>
+        <div
+          className={css({
+            fontSize: '16px',
+            fontWeight: '600',
+            color: 'white',
+            marginBottom: '4px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          })}
+        >
+          {stream.name}
+          {(stream.quality || stream.language) && (
+            <span
+              className={css({
+                fontSize: '12px',
+                color: 'rgba(255, 255, 255, 0.7)',
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                padding: '2px 8px',
+                borderRadius: '4px',
+              })}
+            >
+              {stream.quality || stream.language}
+            </span>
+          )}
+        </div>
+        <div
+          className={css({
+            fontSize: '13px',
+            color: 'rgba(255, 255, 255, 0.7)',
+            overflow: 'hidden',
+          })}
+          dangerouslySetInnerHTML={{ __html: sanitizedTitle }}
+        />
+      </div>
+
+      {/* Play Button Overlay */}
       <div
         className={css({
+          position: 'absolute',
+          bottom: '28px',
+          right: '0px',
+          transform: `translate(-50%, -50%) scale(${isHovered ? '1' : '0'})`,
+          transition: 'all 0.3s ease',
+          opacity: isHovered ? 1 : 0,
+          zIndex: 2,
+        })}
+      >
+        <Button
+          onClick={(e) => {
+            e.stopPropagation();
+            onClick();
+          }}
+          shape="circle"
+          overrides={{
+            BaseButton: {
+              style: {
+                backgroundColor: '#e50914',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                ':hover': {
+                  backgroundColor: '#f40612',
+                  transform: 'scale(1.1)',
+                },
+              },
+            },
+          }}
+        >
+          <Play size={30} color="white" />
+        </Button>
+      </div>
+
+      {/* Bottom Action Bar */}
+      <div
+        className={css({
+          marginTop: 'auto',
           display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start',
-          marginBottom: '12px',
+          gap: '8px',
+          alignItems: 'center',
+          position: 'relative',
+          zIndex: 1,
         })}
       >
         <div
           className={css({
             flex: 1,
+            fontSize: '12px',
+            color: 'rgba(255, 255, 255, 0.6)',
           })}
         >
-          <div
-            className={css({
-              fontSize: '18px',
-              fontWeight: '600',
-              color: 'white',
-              marginBottom: '4px',
-            })}
-          >
-            {stream.name}
-          </div>
-          <div
-            className={css({
-              fontSize: '14px',
-              color: 'rgba(255, 255, 255, 0.7)',
-              marginBottom: '8px',
-            })}
-          >
-            {stream.title}
-          </div>
+          {stream.plugin}
+          {stream.size && ` • ${stream.size}`}
         </div>
-      </div>
-
-      <span
-        className={css({
-          flexGrow: 1,
-        })}
-      />
-
-      <div
-        className={css({
-          display: 'flex',
-          gap: '12px',
-        })}
-      >
         <Button
+          onClick={(e) => {
+            e.stopPropagation();
+            window.open(stream.url, '_blank');
+          }}
+          size="mini"
           overrides={{
             BaseButton: {
               style: {
-                backgroundColor: '#e50914',
-                color: '#FFF',
-                flexGrow: 1,
-                ':hover': {
-                  backgroundColor: '#f40612',
-                  transform: 'translateY(-1px)',
-                },
-              },
-            },
-          }}
-        >
-          <Play size={16} style={{ marginRight: '8px' }} /> Play
-        </Button>
-
-        <Button
-          onClick={() => {
-            return window.open(stream.url, '_blank');
-          }}
-          overrides={{
-            BaseButton: {
-              style: {
-                color: '#FFF',
                 backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                color: '#FFF',
+                minWidth: 'auto',
                 ':hover': {
                   backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                  transform: 'translateY(-1px)',
                 },
               },
             },
           }}
         >
-          <ExternalLink size={16} />
+          <ExternalLink size={14} />
         </Button>
       </div>
     </div>
