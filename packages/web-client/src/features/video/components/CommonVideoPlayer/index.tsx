@@ -24,8 +24,6 @@ import {
   RightControls,
   Scrubber,
   TimeDisplay,
-  Title,
-  TopBar,
   Video,
   VideoWrapper,
   VolumeControl,
@@ -136,10 +134,6 @@ const CommonVideoPlayer = forwardRef<
 
           {showControls && (
             <ControlsOverlay>
-              <TopBar>
-                <Title></Title>
-              </TopBar>
-
               {!buffering && (
                 <CenterControls>
                   <CenterButton

@@ -2,6 +2,7 @@ import { useStyletron } from 'baseui';
 import { useVideoPlayerParams } from '@/features/video/hooks/use-video-player-params.ts';
 import { useSearchParams } from 'react-router-dom';
 import VideoPlayer from '@/features/video/components/VideoPlayer';
+import LoaderComponent from '@/features/video/components/CommonVideoPlayer/Loader.tsx';
 
 export default function PlayerPage() {
   const [css, $theme] = useStyletron();
@@ -25,7 +26,9 @@ export default function PlayerPage() {
           bottom: 0,
           backgroundColor: $theme.colors.backgroundPrimary,
         })}
-      />
+      >
+        <LoaderComponent buffering={true} />
+      </div>
     );
   }
 

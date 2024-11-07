@@ -1,6 +1,7 @@
 import { UseVideoPlayerParamsReturn } from '@/features/video/hooks/use-video-player-params.ts';
 import { useMemo } from 'react';
 import DashVideoPlayer from '../DashPlayer/index.tsx';
+import LoaderComponent from '@/features/video/components/CommonVideoPlayer/Loader.tsx';
 
 export default function VideoPlayer({
   data,
@@ -18,7 +19,7 @@ export default function VideoPlayer({
       return 'mpd';
     }
 
-    return formats[0] || 'mp4';
+    return formats[0] || null;
   }, [data?.formats]);
 
   return (
@@ -28,6 +29,7 @@ export default function VideoPlayer({
           <DashVideoPlayer key={data.url} input={data} />
         </>
       )}
+      {formatToRender === null && <LoaderComponent buffering={true} />}
     </>
   );
 }

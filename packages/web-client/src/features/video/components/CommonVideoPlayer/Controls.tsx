@@ -3,8 +3,15 @@ import { Button, KIND as ButtonKIND, SIZE as ButtonSIZE } from 'baseui/button';
 import { PLACEMENT, StatefulPopover, TRIGGER_TYPE } from 'baseui/popover';
 import { StatefulMenu } from 'baseui/menu';
 import { useStyletron } from 'baseui';
-import { ChevronDown, Settings, Subtitles, Volume2 } from 'lucide-react';
+import {
+  ChevronDown,
+  FullscreenIcon,
+  Settings,
+  Subtitles,
+  Volume2,
+} from 'lucide-react';
 import { useManifestUrl } from '@/features/video/hooks/use-manifest-url.ts';
+import { IconButton } from '@/features/video/components/CommonVideoPlayer/styles.ts';
 
 type VideoMetadata = Awaited<ReturnType<typeof useManifestUrl>>;
 
@@ -173,6 +180,19 @@ const VideoControls: React.FC<VideoControlsProps> = ({
           <Settings size={22} />
         </Button>
       </StatefulPopover>
+      <IconButton
+        onClick={() => {
+          if (document.fullscreenElement) {
+            void document.fullscreenElement.requestFullscreen();
+          } else {
+            void document
+              .querySelector('video')
+              ?.parentElement?.requestFullscreen();
+          }
+        }}
+      >
+        <FullscreenIcon />
+      </IconButton>
     </div>
   );
 };
