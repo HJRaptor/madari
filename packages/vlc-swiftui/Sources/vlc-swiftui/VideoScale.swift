@@ -1,3 +1,11 @@
+//
+//  VideoScale.swift
+//  vlc-swiftui
+//
+//  Created by Omkar Yadav on 13/11/24.
+//
+import Foundation
+
 // MARK: - Video Scale Enum
 @available(iOS 13.0, macOS 12.0, tvOS 13.0, *)
 public enum VideoScale {

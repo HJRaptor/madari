@@ -1,0 +1,14 @@
+{
+  "originHash" : "a95e27dd54e4c98b0fc81e2e87a202fc4e7267fdfe72b5abdc0076fd3302e8f3",
+  "pins" : [
+    {
+      "identity" : "vlckitspmwrapper",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/0xHexE/VLCKitSPMWrapper.git",
+      "state" : {
+        "revision" : "d104e8096ce61e6b3505a6174b24bcd7830b33da"
+      }
+    }
+  ],
+  "version" : 3
+}

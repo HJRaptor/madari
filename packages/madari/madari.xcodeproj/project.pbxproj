@@ -6,6 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		B650B9D12CE4B45000464CD7 /* vlc-swiftui in Frameworks */ = {isa = PBXBuildFile; productRef = B650B9D02CE4B45000464CD7 /* vlc-swiftui */; };
+		B65855762CE1CE960001D2AA /* streamio-addon-sdk in Frameworks */ = {isa = PBXBuildFile; productRef = B65855752CE1CE960001D2AA /* streamio-addon-sdk */; };
+		B66706072CE1CDBF004F2A6A /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = B66706062CE1CDBF004F2A6A /* Alamofire */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		B66705E82CE1CA8D004F2A6A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -30,7 +36,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		B66705F92CE1CA8D004F2A6A /* Exceptions for "madari" folder in "madari" target */ = {
+		B65856B12CE3A7870001D2AA /* Exceptions for "madari" folder in "madari" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -40,10 +46,10 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		B66705D52CE1CA8A004F2A6A /* madari */ = {
+		B658568C2CE3A7870001D2AA /* madari */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				B66705F92CE1CA8D004F2A6A /* Exceptions for "madari" folder in "madari" target */,
+				B65856B12CE3A7870001D2AA /* Exceptions for "madari" folder in "madari" target */,
 			);
 			path = madari;
 			sourceTree = "<group>";
@@ -65,6 +71,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B65855762CE1CE960001D2AA /* streamio-addon-sdk in Frameworks */,
+				B650B9D12CE4B45000464CD7 /* vlc-swiftui in Frameworks */,
+				B66706072CE1CDBF004F2A6A /* Alamofire in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -88,7 +97,7 @@
 		B66705CA2CE1CA8A004F2A6A = {
 			isa = PBXGroup;
 			children = (
-				B66705D52CE1CA8A004F2A6A /* madari */,
+				B658568C2CE3A7870001D2AA /* madari */,
 				B66705EA2CE1CA8D004F2A6A /* madariTests */,
 				B66705F42CE1CA8D004F2A6A /* madariUITests */,
 				B66705D42CE1CA8A004F2A6A /* Products */,
@@ -121,10 +130,13 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				B66705D52CE1CA8A004F2A6A /* madari */,
+				B658568C2CE3A7870001D2AA /* madari */,
 			);
 			name = madari;
 			packageProductDependencies = (
+				B66706062CE1CDBF004F2A6A /* Alamofire */,
+				B65855752CE1CE960001D2AA /* streamio-addon-sdk */,
+				B650B9D02CE4B45000464CD7 /* vlc-swiftui */,
 			);
 			productName = madari;
 			productReference = B66705D32CE1CA8A004F2A6A /* madari.app */;
@@ -208,6 +220,11 @@
 			);
 			mainGroup = B66705CA2CE1CA8A004F2A6A;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				B66706052CE1CDBF004F2A6A /* XCRemoteSwiftPackageReference "Alamofire" */,
+				B65855742CE1CE960001D2AA /* XCLocalSwiftPackageReference "../streamio-addon-sdk" */,
+				B650B9CF2CE4B45000464CD7 /* XCLocalSwiftPackageReference "../vlc-swiftui" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B66705D42CE1CA8A004F2A6A /* Products */;
 			projectDirPath = "";
@@ -296,6 +313,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = madari/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Madari;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -306,7 +325,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
@@ -314,10 +333,11 @@
 				PRODUCT_BUNDLE_IDENTIFIER = dev.f22.madari;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TARGETED_DEVICE_FAMILY = "1,2,3,7";
 				XROS_DEPLOYMENT_TARGET = 2.1;
 			};
 			name = Debug;
@@ -336,6 +356,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = madari/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Madari;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -346,7 +368,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
@@ -354,10 +376,11 @@
 				PRODUCT_BUNDLE_IDENTIFIER = dev.f22.madari;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TARGETED_DEVICE_FAMILY = "1,2,3,7";
 				XROS_DEPLOYMENT_TARGET = 2.1;
 			};
 			name = Release;
@@ -606,6 +629,44 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		B650B9CF2CE4B45000464CD7 /* XCLocalSwiftPackageReference "../vlc-swiftui" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../vlc-swiftui";
+		};
+		B65855742CE1CE960001D2AA /* XCLocalSwiftPackageReference "../streamio-addon-sdk" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../streamio-addon-sdk";
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B66706052CE1CDBF004F2A6A /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.10.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B650B9D02CE4B45000464CD7 /* vlc-swiftui */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = "vlc-swiftui";
+		};
+		B65855752CE1CE960001D2AA /* streamio-addon-sdk */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = "streamio-addon-sdk";
+		};
+		B66706062CE1CDBF004F2A6A /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B66706052CE1CDBF004F2A6A /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B66705CB2CE1CA8A004F2A6A /* Project object */;
 }

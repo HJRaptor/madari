@@ -1,0 +1,32 @@
+{
+  "originHash" : "95547efb3fc140858c20b31000e34905691715a96bfd926b9d76c97d51bff0a1",
+  "pins" : [
+    {
+      "identity" : "alamofire",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Alamofire/Alamofire.git",
+      "state" : {
+        "revision" : "e16d3481f5ed35f0472cb93350085853d754913f",
+        "version" : "5.10.1"
+      }
+    },
+    {
+      "identity" : "optionallydecodable",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/idrougge/OptionallyDecodable.git",
+      "state" : {
+        "revision" : "0171cdf9e90233c68302b95fb6063f2f7279b031",
+        "version" : "1.2.0"
+      }
+    },
+    {
+      "identity" : "vlckitspmwrapper",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/0xHexE/VLCKitSPMWrapper.git",
+      "state" : {
+        "revision" : "d104e8096ce61e6b3505a6174b24bcd7830b33da"
+      }
+    }
+  ],
+  "version" : 3
+}
