@@ -73,9 +73,13 @@ final class AddonManager: ObservableObject {
     ///   - url: Base URL of the Stremio addon manifest
     /// - Returns: The manifest of the added addon
     func addAddon(url: String) async throws -> AddonManifest {
+        let processedURL = url.hasSuffix("/manifest.json")
+            ? String(url.dropLast("/manifest.json".count))
+            : url
+        
         let descriptor = FetchDescriptor<StoredAddonURL>(
             predicate: #Predicate<StoredAddonURL> { addon in
-                addon.url == url
+                addon.url == processedURL
             }
         )
         
