@@ -9,26 +9,29 @@ on:
 
 jobs:
   build:
-    runs-on: macos-14  # Using macOS 14 Sonoma
+    runs-on: macos-14
 
     steps:
       - uses: actions/checkout@v3
 
-      # Automatically find and select latest Xcode
-      - name: Select latest Xcode
-        run: |
-          ls -t /Applications/ | grep "Xcode_"
-          LATEST_XCODE=$(ls -t /Applications/ | grep "Xcode_" | head -n 1)
-          echo "Latest Xcode version: $LATEST_XCODE"
-          sudo xcode-select -s "/Applications/$LATEST_XCODE"
+      # Use Xcode 15.4 explicitly
+      - name: Select Xcode 15.4
+        run: sudo xcode-select -s /Applications/Xcode_15.4.app
 
-      # Check versions
       - name: Check versions
         run: |
           xcodebuild -version
           swift --version
 
-      # Clean derived data and package cache
+      # Temporarily downgrade Swift version in Package.swift files
+      - name: Update Swift version in packages
+        run: |
+          find . -name "Package.swift" -type f -exec sed -i '' '1s/swift-tools-version:6.0.0/swift-tools-version:5.10.0/' {} +
+          
+          # Show all Package.swift versions
+          echo "Modified Package.swift files:"
+          find . -name "Package.swift" -type f -exec head -n 1 {} \;
+
       - name: Clean
         run: |
           rm -rf ~/Library/Developer/Xcode/DerivedData
@@ -39,8 +42,7 @@ jobs:
           xcodebuild -scheme madari -configuration Release \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO \
-            SWIFT_VERSION=6.0
+            CODE_SIGNING_ALLOWED=NO
 
       - name: Create DMG
         run: |
