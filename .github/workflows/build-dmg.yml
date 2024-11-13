@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-15
     outputs:
       dmg_path: ${{ steps.dmg_info.outputs.dmg_path }}
       app_version: ${{ steps.dmg_info.outputs.version }}
