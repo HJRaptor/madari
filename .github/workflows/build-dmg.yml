@@ -9,7 +9,11 @@ on:
 
 jobs:
   build:
-    runs-on: macos-15
+    runs-on: macos-latest
+    outputs:
+      dmg_path: ${{ steps.dmg_info.outputs.dmg_path }}
+      app_version: ${{ steps.dmg_info.outputs.version }}
+      build_number: ${{ steps.dmg_info.outputs.build_number }}
 
     steps:
       - uses: actions/checkout@v4
@@ -23,16 +27,41 @@ jobs:
 
       - name: Create DMG
         run: |
+          # Find the madari directory in DerivedData and store the path
+          DERIVED_PATH=$(find "$HOME/Library/Developer/Xcode/DerivedData" -type d -name "madari-*" | head -n 1)
+          echo "Found DerivedData path: $DERIVED_PATH"
+          
+          # Navigate to the Release directory
+          cd "$DERIVED_PATH/Build/Products/Release"
+          echo "Current directory: $(pwd)"
+          
+          # Create DMG
           mkdir -p /tmp/dmg
-          cp -r "build/Release/madari.app" /tmp/dmg/
+          cp -r "madari.app" /tmp/dmg/
           hdiutil create -volname "madari" \
             -srcfolder /tmp/dmg \
             -ov \
             -format UDZO \
-            "madari.dmg"
+            "$GITHUB_WORKSPACE/madari.dmg"
           rm -rf /tmp/dmg
 
-      # Upload the DMG as an artifact
+      - name: Get App Info
+        id: dmg_info
+        run: |
+          # Find the madari directory again (we need it for the Info.plist)
+          DERIVED_PATH=$(find "$HOME/Library/Developer/Xcode/DerivedData" -type d -name "madari" | head -n 1)
+          APP_PATH="$DERIVED_PATH/Build/Products/Release/madari.app"
+          
+          # Get the DMG path
+          echo "dmg_path=$GITHUB_WORKSPACE/madari.dmg" >> $GITHUB_OUTPUT
+          
+          # Extract version from Info.plist
+          VERSION=$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString" "$APP_PATH/Contents/Info.plist")
+          BUILD=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" "$APP_PATH/Contents/Info.plist")
+          
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "build_number=$BUILD" >> $GITHUB_OUTPUT
+
       - name: Upload DMG
         uses: actions/upload-artifact@v4
         with:
