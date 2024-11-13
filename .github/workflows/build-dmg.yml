@@ -9,17 +9,43 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-14  # Using macOS 14 Sonoma
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
+
+      # Automatically find and select latest Xcode
+      - name: Select latest Xcode
+        run: |
+          LATEST_XCODE=$(ls -t /Applications/ | grep "Xcode_" | head -n 1)
+          echo "Latest Xcode version: $LATEST_XCODE"
+          sudo xcode-select -s "/Applications/$LATEST_XCODE"
+
+      # Check versions
+      - name: Check versions
+        run: |
+          xcodebuild -version
+          swift --version
+
+      # Clean derived data and package cache
+      - name: Clean
+        run: |
+          rm -rf ~/Library/Developer/Xcode/DerivedData
+          rm -rf ~/.build
+
+      # Reset package resolution
+      - name: Reset Package Resolution
+        run: |
+          swift package reset
+          swift package resolve
 
       - name: Build App
         run: |
           xcodebuild -scheme madari -configuration Release \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO
+            CODE_SIGNING_ALLOWED=NO \
+            SWIFT_VERSION=6.0
 
       - name: Create DMG
         run: |
@@ -32,9 +58,8 @@ jobs:
             "madari.dmg"
           rm -rf /tmp/dmg
 
-      # Upload the DMG as an artifact
       - name: Upload DMG
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: madari
           path: madari.dmg
