@@ -33,12 +33,6 @@ jobs:
           rm -rf ~/Library/Developer/Xcode/DerivedData
           rm -rf ~/.build
 
-      # Reset package resolution
-      - name: Reset Package Resolution
-        run: |
-          swift package reset
-          swift package resolve
-
       - name: Build App
         run: |
           xcodebuild -scheme madari -configuration Release \
