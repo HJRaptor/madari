@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useStyletron } from 'baseui';
 import { useAtomValue } from 'jotai';
-import { activeTitle } from '@/features/listing/atoms/active-title.ts';
+import { activeTitleAtom } from '@/features/listing/atoms/active-title-atom.ts';
 import { useQuery } from '@tanstack/react-query';
 import { Tag } from 'baseui/tag';
 import { MovieInfo } from '@/features/addon/service/Addon.tsx';
@@ -21,7 +21,7 @@ import ShimmerLoader from '@/features/visual/components/Shimmer';
 
 export function VisualViewer() {
   const [css, theme] = useStyletron();
-  const currentValue = useAtomValue(activeTitle);
+  const currentValue = useAtomValue(activeTitleAtom);
   const [value, setValue] = useState<typeof currentValue>(currentValue);
 
   // Create a memoized debounced function that persists across renders

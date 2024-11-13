@@ -11,7 +11,7 @@ import { useStyletron } from 'baseui';
 import { Info, Play, Star } from 'lucide-react';
 import { MovieInfo } from '@/features/addon/service/Addon.tsx';
 import { useAtom } from 'jotai/index';
-import { activeTitle } from '@/features/listing/atoms/active-title.ts';
+import { activeTitleAtom } from '@/features/listing/atoms/active-title-atom.ts';
 
 // Types
 interface MovieData {
@@ -319,7 +319,7 @@ const MovieCardLarge = forwardRef<
     setIsHoverImageLoaded(true);
   }, []);
 
-  const [active] = useAtom(activeTitle);
+  const [active] = useAtom(activeTitleAtom);
 
   const isActive = useMemo(() => {
     return (

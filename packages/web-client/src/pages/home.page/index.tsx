@@ -15,7 +15,7 @@ import {
 import { useAtom } from 'jotai/index';
 import { tileViewAtom } from '@/features/listing/atoms/tiles-view.ts';
 import { AddonContext } from '@/features/addon/providers/AddonContext.ts';
-import { activeTitle } from '@/features/listing/atoms/active-title.ts';
+import { activeTitleAtom } from '@/features/listing/atoms/active-title-atom.ts';
 import { useQuery } from '@tanstack/react-query';
 import { MovieInfo } from '@/features/addon/service/Addon.tsx';
 import { HeadingMedium } from 'baseui/typography';
@@ -140,7 +140,7 @@ const Container = styled('div', {
 
 export default function HomePage() {
   const addons = useContext(AddonContext);
-  const [atom] = useAtom(activeTitle);
+  const [atom] = useAtom(activeTitleAtom);
   const [, setTileView] = useAtom(tileViewAtom);
 
   useEffect(() => {
@@ -156,15 +156,15 @@ export default function HomePage() {
 
   const path = useLocation();
 
+  const q = searchParams.get('q');
+
   const items_ = useMemo(() => {
     if (path.pathname.startsWith('/search')) {
-      return addons
-        .map((res) => res.search(searchParams.get('q') ?? ''))
-        .flat();
+      return addons.map((res) => res.search(q ?? '')).flat();
     }
 
     return addons.map((res) => res.loadCatalog()).flat();
-  }, [addons, path.pathname, searchParams]);
+  }, [addons, path.pathname, q]);
 
   const types = searchParams.getAll('type');
 
@@ -231,13 +231,14 @@ export default function HomePage() {
   }
 
   return (
-    <Container ref={containerRef}>
+    <Container ref={containerRef} key={q}>
       <ScrollContainer
         onWheel={() => {
           setTileView('full');
         }}
       >
         <List
+          key={(q ?? '').toString() + path.pathname}
           className="custom-scrollbar"
           ref={listRef}
           height={dimensions.height}

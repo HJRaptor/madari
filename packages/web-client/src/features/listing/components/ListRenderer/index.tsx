@@ -5,7 +5,7 @@ import { MovieInfo } from '@/features/addon/service/Addon';
 import ArrowKeyCard from '@/features/listing/components/ArrowKeyCard';
 import { debounce } from 'lodash';
 import { useAtom } from 'jotai/index';
-import { activeTitle } from '@/features/listing/atoms/active-title.ts';
+import { activeTitleAtom } from '@/features/listing/atoms/active-title-atom.ts';
 import TvMovieCard from '@/features/listing/components/TvMovieCard';
 import useDebounce from '@/features/common/hooks/use-debounce.ts';
 
@@ -107,7 +107,7 @@ const ListRenderer: React.FC<ListRendererProps> = ({
     WebkitOverflowScrolling: 'touch',
   });
 
-  const [atom] = useAtom(activeTitle);
+  const [atom] = useAtom(activeTitleAtom);
 
   const scrollTo = useDebounce(
     (index: number) => {

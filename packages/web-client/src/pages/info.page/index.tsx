@@ -7,7 +7,7 @@ import { useAtom } from 'jotai/index';
 import { tileViewAtom } from '@/features/listing/atoms/tiles-view.ts';
 import { AddonContext } from '@/features/addon/providers/AddonContext.ts';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { activeTitle } from '@/features/listing/atoms/active-title.ts';
+import { activeTitleAtom } from '@/features/listing/atoms/active-title-atom.ts';
 import { MovieInfo } from '@/features/addon/service/Addon.tsx';
 import EpisodeList from '@/features/visual/components/SeriesViewer';
 import StreamList from '@/features/visual/components/StreamList';
@@ -62,7 +62,7 @@ export default function InfoPage() {
     },
   });
 
-  const [, setActiveTitleData] = useAtom(activeTitle);
+  const [, setActiveTitleData] = useAtom(activeTitleAtom);
 
   useEffect(() => {
     const type = params.type;

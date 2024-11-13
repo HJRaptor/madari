@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useStyletron } from 'baseui';
 import { useAtom } from 'jotai';
 import { HeadingSmall } from 'baseui/typography';
@@ -17,6 +17,9 @@ import {
   playerSettingsAtom,
 } from '@/features/settings/components/atoms/all.tsx';
 import allSubtitles from '../../data/languages.json';
+import { Button } from 'baseui/button';
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+import { GripVertical, Plus, X } from 'lucide-react';
 
 const SettingsCard = ({
   title,
@@ -113,11 +116,77 @@ export const GeneralSettings: React.FC = () => {
 export const PlayerSettings: React.FC = () => {
   const [, theme] = useStyletron();
   const [settings, setSettings] = useAtom(playerSettingsAtom);
+  const [newExtension, setNewExtension] = useState('');
 
   const subtitlesLanguages = allSubtitles;
+  const audioLanguages = allSubtitles; // Replace with actual audio languages if different
+
+  const handleDragEnd = (result) => {
+    if (!result.destination) return;
+
+    const items = Array.from(settings.fileExtensionPreference);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    setSettings((prev) => ({
+      ...prev,
+      fileExtensionPreference: items,
+    }));
+    toaster.positive('Extension order updated');
+  };
+
+  const addExtension = () => {
+    if (
+      newExtension &&
+      !settings.fileExtensionPreference.includes(newExtension)
+    ) {
+      setSettings((prev) => ({
+        ...prev,
+        fileExtensionPreference: [
+          ...prev.fileExtensionPreference,
+          newExtension,
+        ],
+      }));
+      setNewExtension('');
+      toaster.positive('Extension added');
+    }
+  };
+
+  const removeExtension = (extension: string) => {
+    setSettings((prev) => ({
+      ...prev,
+      fileExtensionPreference: prev.fileExtensionPreference.filter(
+        (ext) => ext !== extension,
+      ),
+    }));
+    toaster.positive('Extension removed');
+  };
 
   return (
     <SettingsCard title="Player Settings">
+      <FormControl label="Default Audio Language">
+        <Select
+          options={audioLanguages}
+          value={[
+            {
+              id: settings.defaultAudioLanguage,
+              label: audioLanguages.find(
+                (l) => l.id === settings.defaultAudioLanguage,
+              )?.label,
+            },
+          ]}
+          onChange={(params) => {
+            if (params.value[0]) {
+              setSettings((prev) => ({
+                ...prev,
+                defaultAudioLanguage: params.value[0].id as string,
+              }));
+              toaster.positive('Audio language updated');
+            }
+          }}
+        />
+      </FormControl>
+
       <FormControl label="Default Subtitles Language">
         <Select
           options={subtitlesLanguages}
@@ -139,6 +208,74 @@ export const PlayerSettings: React.FC = () => {
             }
           }}
         />
+      </FormControl>
+
+      <FormControl label="File Extension Preferences">
+        <Block marginBottom="scale400">
+          <Block display="flex" alignItems="center">
+            <Block flex="1" marginRight="scale300">
+              <Input
+                value={newExtension}
+                onChange={(e) => setNewExtension(e.currentTarget.value)}
+                placeholder="Enter file extension (e.g., mkv)"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    addExtension();
+                  }
+                }}
+              />
+            </Block>
+            <Button onClick={addExtension} size="compact">
+              <Plus size={16} />
+            </Button>
+          </Block>
+        </Block>
+
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <Droppable droppableId="extensions">
+            {(provided) => (
+              <Block {...provided.droppableProps} ref={provided.innerRef}>
+                {settings.fileExtensionPreference.map((extension, index) => (
+                  <Draggable
+                    key={extension}
+                    draggableId={extension}
+                    index={index}
+                  >
+                    {(provided) => (
+                      <Block
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        margin="scale200"
+                        padding="scale400"
+                        backgroundColor={theme.colors.backgroundTertiary}
+                        display="flex"
+                        alignItems="center"
+                      >
+                        <Block
+                          {...provided.dragHandleProps}
+                          marginRight="scale300"
+                        >
+                          <GripVertical size={16} />
+                        </Block>
+                        <Block flex="1">{extension}</Block>
+                        <Button
+                          onClick={() => {
+                            removeExtension(extension);
+                          }}
+                          kind="tertiary"
+                          size="mini"
+                        >
+                          <X size={16} />
+                        </Button>
+                      </Block>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </Block>
+            )}
+          </Droppable>
+        </DragDropContext>
       </FormControl>
 
       <FormControl label="Subtitles Size">
@@ -255,7 +392,7 @@ export const AudioSettings: React.FC = () => {
 
   return (
     <SettingsCard title="Audio Settings">
-      <FormControl label="Default Audio Track">
+      <FormControl label="Preffered Default Audio Track">
         <Select
           options={allSubtitles}
           value={[

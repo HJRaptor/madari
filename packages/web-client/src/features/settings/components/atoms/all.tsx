@@ -1,6 +1,5 @@
 import { atomWithStorage } from 'jotai/utils';
 
-// Define the settings atoms
 interface GeneralSettings {
   performance: boolean;
   language: string;
@@ -13,6 +12,8 @@ interface PlayerSettings {
   subtitlesColor: string;
   subtitlesBackgroundColor: string;
   subtitlesOutlineColor: string;
+  defaultAudioLanguage: string;
+  fileExtensionPreference: string[];
 }
 
 interface AudioSettings {
@@ -37,6 +38,8 @@ export const playerSettingsAtom = atomWithStorage<PlayerSettings>(
     subtitlesColor: '#FFFFFF',
     subtitlesBackgroundColor: '#000000',
     subtitlesOutlineColor: '#000000',
+    defaultAudioLanguage: 'eng',
+    fileExtensionPreference: [],
   },
 );
 

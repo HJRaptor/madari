@@ -114,7 +114,15 @@ const EpisodeList: React.FC<Props> = ({ data, onEpisodeSelect }) => {
             marginBottom: '12px',
           })}
         >
-          <ButtonGroup>
+          <ButtonGroup
+            overrides={{
+              Root: {
+                style: {
+                  overflowX: 'auto',
+                },
+              },
+            }}
+          >
             {seasons.map((season) => (
               <Button
                 key={season}
@@ -126,6 +134,7 @@ const EpisodeList: React.FC<Props> = ({ data, onEpisodeSelect }) => {
                     style: {
                       backgroundColor:
                         activeSeason === season ? '#e50914' : 'transparent',
+                      minWidth: '120px',
                       opacity: activeSeason === season ? 1 : 0.7,
                       ':hover': {
                         backgroundColor:

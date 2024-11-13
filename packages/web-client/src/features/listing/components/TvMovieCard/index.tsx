@@ -1,7 +1,7 @@
 import { forwardRef, useMemo, useState } from 'react';
 import { useStyletron } from 'baseui';
 import { useAtom } from 'jotai';
-import { activeTitle } from '@/features/listing/atoms/active-title.ts';
+import { activeTitleAtom } from '@/features/listing/atoms/active-title-atom.ts';
 import { MovieInfo } from '@/features/addon/service/Addon.tsx';
 import { Button } from 'baseui/button';
 import { PlayIcon } from 'lucide-react';
@@ -18,7 +18,7 @@ const SimpleMovieCard = forwardRef<
   }
 >(({ data, listId, index, height, width }, ref) => {
   const [css, theme] = useStyletron();
-  const [active, setActiveCard] = useAtom(activeTitle);
+  const [active, setActiveCard] = useAtom(activeTitleAtom);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [isImageError, setIsImageError] = useState(false);
 

@@ -4,7 +4,7 @@ import { tileViewAtom } from '@/features/listing/atoms/tiles-view.ts';
 import { MovieInfo } from '@/features/addon/service/Addon.tsx';
 import { videoStateAtom } from '@/features/video/atom/video-state.ts';
 
-export const activeTitle = withAtomEffect(
+export const activeTitleAtom = withAtomEffect(
   atom<
     | ({
         categoryId: string;
@@ -17,7 +17,7 @@ export const activeTitle = withAtomEffect(
     | null
   >(null),
   (get, set) => {
-    const val = get(activeTitle);
+    const val = get(activeTitleAtom);
 
     if (val && val.data && val.data.trailers?.length) {
       set(tileViewAtom, 'medium');
