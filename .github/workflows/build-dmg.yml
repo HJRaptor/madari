@@ -1,0 +1,40 @@
+name: Build macOS DMG
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build App
+        run: |
+          xcodebuild -scheme madari -configuration Release \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Create DMG
+        run: |
+          mkdir -p /tmp/dmg
+          cp -r "build/Release/madari.app" /tmp/dmg/
+          hdiutil create -volname "madari" \
+            -srcfolder /tmp/dmg \
+            -ov \
+            -format UDZO \
+            "madari.dmg"
+          rm -rf /tmp/dmg
+
+      # Upload the DMG as an artifact
+      - name: Upload DMG
+        uses: actions/upload-artifact@v4
+        with:
+          name: madari
+          path: madari.dmg
