@@ -17,6 +17,7 @@ jobs:
       # Automatically find and select latest Xcode
       - name: Select latest Xcode
         run: |
+          ls -t /Applications/ | grep "Xcode_"
           LATEST_XCODE=$(ls -t /Applications/ | grep "Xcode_" | head -n 1)
           echo "Latest Xcode version: $LATEST_XCODE"
           sudo xcode-select -s "/Applications/$LATEST_XCODE"
