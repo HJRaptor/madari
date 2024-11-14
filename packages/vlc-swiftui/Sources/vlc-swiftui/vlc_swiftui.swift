@@ -608,25 +608,29 @@ private struct PlaybackControls: View {
                     .font(.system(size: 16, weight: .semibold))
                     .frame(width: 24, height: 24) // Fixed frame
             }
+#if os(macOS)
             .focusable()
             .keyboardShortcut(.leftArrow, modifiers: [])
-            
+#endif
             Button(action: viewModel.togglePlayPause) {
                 Image(systemName: viewModel.playerState == .playing ? "pause.fill" : "play.fill")
                     .font(.system(size: 22, weight: .semibold))
                     .frame(width: 24, height: 24) // Fixed frame
                     .contentShape(Rectangle())
             }
+#if os(macOS)
             .focusable()
             .keyboardShortcut(.space, modifiers: [])
-            
+#endif
             Button(action: viewModel.seekForward) {
                 Image(systemName: "goforward.10")
                     .font(.system(size: 16, weight: .semibold))
                     .frame(width: 24, height: 24) // Fixed frame
             }
+#if os(macOS)
             .focusable()
             .keyboardShortcut(.rightArrow, modifiers: [])
+#endif
         }
     }
 }
