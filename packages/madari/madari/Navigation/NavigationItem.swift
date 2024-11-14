@@ -8,15 +8,17 @@
 
 enum NavigationItem: String, CaseIterable {
     case home = "Home"
+    case search = "Search"
     case movies = "Movies"
     case series = "Series"
     case settings = "Settings"
     
     var icon: String {
         switch self {
-        case .home: return "house.fill"
-        case .movies: return "film.fill"
-        case .series: return "tv.fill"
+        case .home: return "house"
+        case .movies: return "film"
+        case .series: return "tv"
+        case .search: return "magnifyingglass"
         case .settings: return "gear"
         }
     }

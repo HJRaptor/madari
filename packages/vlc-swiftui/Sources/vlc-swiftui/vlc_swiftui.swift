@@ -431,26 +431,27 @@ public struct VLCPlayerView: View {
                     if viewModel.isControlsVisible {
                         HStack {
                             if let onBackButton = onBackButton {
-                                Button(action: onBackButton) {
-                                    Image(systemName: "chevron.backward")
-                                        .font(.system(size: 16, weight: .semibold))
-                                        .frame(width: 24, height: 24)
-                                        .foregroundColor(.white)
-                                        .padding(.horizontal, 12)
-                                        .padding(.vertical, 8)
+                                HStack {
+                                    Button(action: onBackButton) {
+                                        Image(systemName: "chevron.backward")
+                                            .font(.system(size: 16, weight: .semibold))
+                                            .frame(width: 24, height: 24)
+                                            .foregroundColor(.white)
+                                            .padding(8)
+                                            .background(
+                                                Circle()
+                                                    .fill(Color.black.opacity(0.6))
+                                            )
+                                    }
+                                    .buttonStyle(.plain)
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 32)
+                                    Spacer()
                                 }
-                                .padding(.horizontal, 16)
-                                .padding(.top, 16)
+                                .padding(.top, geometry.safeAreaInsets.top)
                             }
                             Spacer()
                         }
-                        .background(
-                            LinearGradient(
-                                gradient: Gradient(colors: [Color.black.opacity(0.7), Color.black.opacity(0)]),
-                                startPoint: .top,
-                                endPoint: .bottom
-                            )
-                        )
                     }
                     
                     Spacer()
@@ -1260,4 +1261,3 @@ extension View {
     }
 }
 #endif
-

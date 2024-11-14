@@ -255,6 +255,15 @@ struct SettingsView_Previews: PreviewProvider {
 
 struct SettingsView: View {
     @State private var selectedSection: SettingsSection? = nil
+
+    private var titleView: some View {
+        Text("Settings")
+            .font(.title)
+            .fontWeight(.bold)
+            .foregroundColor(.primary)
+            .padding(.horizontal, 0)
+            .padding(.top, 16)
+    }
     
     var body: some View {
         #if os(macOS)
@@ -276,9 +285,10 @@ struct SettingsView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
+        .navigationTitle("Settings")
         #else
-        // iOS implementation remains the same
         NavigationStack {
+            titleView
             List {
                 ForEach([SettingsSection.general, .player, .addons, .help], id: \.self) { section in
                     NavigationLink {
@@ -290,6 +300,7 @@ struct SettingsView: View {
             }
             .navigationTitle("Settings")
         }
+        .navigationTitle("Settings")
         #endif
     }
 }

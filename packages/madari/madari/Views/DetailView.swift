@@ -17,23 +17,32 @@ struct DetailView: View {
         isLoading = true
         defer { isLoading = false }
         
-        let supportingAddon = manifests.first { manifest in
+        // Find all supporting addons instead of just the first one
+        let supportingAddons = manifests.filter { manifest in
             manifest.idPrefixes?.contains { prefix in
                 meta.id.hasPrefix(prefix)
             } ?? false
         }
         
-        guard let addon = supportingAddon else {
+        guard !supportingAddons.isEmpty else {
             error = NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No addon found supporting this content"])
             return
         }
         
-        do {
-            let addonMeta = try await addonManager.getMeta(from: addon.id, type: meta.type.rawValue, id: meta.id)
-            fullMeta = addonMeta.meta
-        } catch {
-            self.error = error
+        // Try each addon until one succeeds
+        for addon in supportingAddons {
+            do {
+                let addonMeta = try await addonManager.getMeta(from: addon.id, type: meta.type.rawValue, id: meta.id)
+                fullMeta = addonMeta.meta
+                return // Successfully got metadata, exit the function
+            } catch {
+                // Continue to next addon if this one fails
+                continue
+            }
         }
+        
+        // If we get here, all addons failed
+        self.error = NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to load metadata from all supporting addons"])
     }
     
     private var isShowingSheet: Binding<Bool> {
@@ -197,7 +206,7 @@ struct DetailView: View {
                         meta: fullMeta ?? meta,
                         onStreamSelected: {
                             stream in
-                                coordinator.navigateToVideoPlayer(NavigationStream(stream: stream, meta: meta))
+                            coordinator.navigateToVideoPlayer(NavigationStream(stream: stream, meta: meta))
                         }
                     )
                     .navigationTitle("Available Streams")

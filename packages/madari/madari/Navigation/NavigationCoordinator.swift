@@ -36,4 +36,8 @@ class NavigationCoordinator: ObservableObject {
         navigationPath = NavigationPath()
         navigationState = .none
     }
+    
+    func navigateToSearch() {
+        
+    }
 }

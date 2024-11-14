@@ -165,7 +165,7 @@ struct ContentCard: View {
                 Text(meta.name)
                     .font(isDesktop ? .title3 : .caption)
                     .fontWeight(isDesktop ? .semibold : .medium)
-                    .lineLimit(2)
+                    .lineLimit(1)
                     .multilineTextAlignment(.leading)
                 
                 if isDesktop {
@@ -186,7 +186,6 @@ struct ContentCard: View {
     }
 }
 
-// Extracted metadata text view
 struct MetadataText: View {
     let meta: AddonMetaMeta
     
@@ -200,6 +199,8 @@ struct MetadataText: View {
                     Text(year)
                 } else if let released = meta.released {
                     Text(released.prefix(4))
+                } else {
+                    Text("-")
                 }
             }
             
@@ -209,12 +210,16 @@ struct MetadataText: View {
                     Text(firstGenre)
                 } else if meta.type != .movie {
                     Text(meta.type.rawValue.capitalized)
+                } else {
+                    Text("-")
                 }
             }
             
             // Runtime
             if let runtime = meta.runtime {
                 Text(runtime)
+            } else {
+                Text("-")
             }
         }
     }

@@ -23,7 +23,7 @@ struct CachedContent: Codable {
 }
 
 // MARK: - ViewConfig
-private struct ViewConfig {
+struct ViewConfig {
     let itemsPerRow: Int
     let horizontalPadding: CGFloat
     let minWindowWidth: CGFloat?
@@ -36,7 +36,7 @@ struct ContentGridView: View {
     
     private var config: ViewConfig {
 #if os(macOS)
-        ViewConfig(itemsPerRow: 5, horizontalPadding: 24, minWindowWidth: 800)
+        ViewConfig(itemsPerRow: 5, horizontalPadding: 0, minWindowWidth: 800)
 #else
         ViewConfig(itemsPerRow: 4, horizontalPadding: 0, minWindowWidth: nil)
 #endif
@@ -83,6 +83,8 @@ struct ContentGridView: View {
         ScrollView {
             MaxWidthContent {
                 VStack(alignment: .leading, spacing: 16) {
+                    titleView  // Add title view here
+                    
                     LazyVStack(alignment: .leading, spacing: 24) {
                         // Loaded content
                         ForEach(viewModel.sortedCatalogKeys, id: \.self) { catalogKey in
@@ -92,23 +94,18 @@ struct ContentGridView: View {
                         }
                     }
                     .padding(.vertical)
-                    .padding(.horizontal, 20)
                 }
             }
         }
     }
-    
+
     private var titleView: some View {
-        NavigationLink(value: navigationDestination) {
-            Text(mainTitle)
-                .font(.title)
-                .fontWeight(.bold)
-                .foregroundColor(.primary)
-        }
-        .buttonStyle(.plain)
-        .platformSpecificHover()
-        .padding(.horizontal, config.horizontalPadding)
-        .padding(.top, 16)
+        Text(mainTitle)
+            .font(.title)
+            .fontWeight(.bold)
+            .foregroundColor(.primary)
+            .padding(.horizontal, 0)
+            .padding(.top, 16)
     }
     
     private var navigationDestination: NavigationItem {

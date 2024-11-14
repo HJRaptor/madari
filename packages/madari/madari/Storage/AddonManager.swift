@@ -18,10 +18,23 @@ final class AddonManager: ObservableObject {
     private var modelContainer: ModelContainer
     private let queue = DispatchQueue(label: "com.addonmanager.queue", attributes: .concurrent)
     
-    /// Dictionary to store active StremioService instances and their manifests
+    /// Dictionary to store active StremioService instances and their manifests, sorted by order
     private var activeAddons: [String: (service: StremioService, manifest: AddonManifest)] = [:] {
         didSet {
-            activeManifests = Array(activeAddons.values.map { $0.manifest })
+            // Get the stored addon URLs with their order
+            if let storedURLs = try? modelContainer.mainContext.fetch(FetchDescriptor<StoredAddonURL>()) {
+                // Create a dictionary of URL to order
+                let orderMap = Dictionary(uniqueKeysWithValues: storedURLs.map { ($0.url, $0.order) })
+                
+                // Sort manifests by order when updating activeAddons
+                activeManifests = Array(activeAddons)
+                    .sorted { first, second in
+                        let order1 = orderMap[first.key] ?? 0
+                        let order2 = orderMap[second.key] ?? 0
+                        return order1 < order2
+                    }
+                    .map { $0.value.manifest }
+            }
         }
     }
     
