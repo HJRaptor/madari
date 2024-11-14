@@ -75,6 +75,7 @@ struct VideoHeroSection: View {
                             .background(Color.white)
                             .foregroundColor(.black)
                             .clipShape(Capsule())
+                            .buttonStyle(.plain)
                         }
                         
                         if let description = meta.description {
@@ -117,12 +118,14 @@ struct VideoHeroSection: View {
                                     Image(systemName: "play.fill")
                                     Text("Play")
                                 }
+                                .buttonStyle(.plain)
+                                .foregroundColor(.black)
                                 .padding(.horizontal, 24)
                                 .padding(.vertical, 12)
-                                .background(Color.white)
-                                .foregroundColor(.black)
-                                .clipShape(Capsule())
                             }
+                            .background(Color.white)
+                            .foregroundColor(.black)
+                            .clipShape(Capsule())
                         }
                         
                         if let description = meta.description {

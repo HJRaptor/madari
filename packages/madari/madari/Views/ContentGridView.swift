@@ -36,7 +36,7 @@ struct ContentGridView: View {
     
     private var config: ViewConfig {
 #if os(macOS)
-        ViewConfig(itemsPerRow: 5, horizontalPadding: 0, minWindowWidth: 800)
+        ViewConfig(itemsPerRow: 5, horizontalPadding: 24, minWindowWidth: 800)
 #else
         ViewConfig(itemsPerRow: 4, horizontalPadding: 0, minWindowWidth: nil)
 #endif

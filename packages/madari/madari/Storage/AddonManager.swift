@@ -174,8 +174,6 @@ final class AddonManager: ObservableObject {
         }
     }
     
-    
-    
     /// Get all stored addon URLs
     /// - Returns: Array of StoredAddonURL objects
     func getStoredAddonURLs() throws -> [StoredAddonURL] {
@@ -186,6 +184,11 @@ final class AddonManager: ObservableObject {
     /// Get all active addon manifests
     /// - Returns: Array of AddonManifest objects
     func getActiveManifests() -> [AddonManifest]? {
+        print("activeManifests")
+        print(activeManifests.map { item in
+            item.id
+        })
+        print("activeManifests")
         return activeManifests
     }
     
