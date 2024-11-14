@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-15
     outputs:
       ipa_path: ${{ steps.ipa_info.outputs.ipa_path }}
     steps:
