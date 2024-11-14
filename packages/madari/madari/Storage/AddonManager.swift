@@ -10,14 +10,14 @@ final class AddonManager: ObservableObject {
     // MARK: - Published Properties
     @Published private(set) var loadingState: AddonLoadingState = .notStarted
     @Published private(set) var activeManifests: [AddonManifest] = []
-    
+
     // MARK: - Singleton
     static let shared = AddonManager()
-    
+
     // MARK: - Properties
     private var modelContainer: ModelContainer
     private let queue = DispatchQueue(label: "com.addonmanager.queue", attributes: .concurrent)
-    
+
     /// Dictionary to store active StremioService instances and their manifests, sorted by order
     private var activeAddons: [String: (service: StremioService, manifest: AddonManifest)] = [:] {
         didSet {
@@ -25,7 +25,7 @@ final class AddonManager: ObservableObject {
             if let storedURLs = try? modelContainer.mainContext.fetch(FetchDescriptor<StoredAddonURL>()) {
                 // Create a dictionary of URL to order
                 let orderMap = Dictionary(uniqueKeysWithValues: storedURLs.map { ($0.url, $0.order) })
-                
+
                 // Sort manifests by order when updating activeAddons
                 activeManifests = Array(activeAddons)
                     .sorted { first, second in
@@ -37,10 +37,10 @@ final class AddonManager: ObservableObject {
             }
         }
     }
-    
+
     /// Group for tracking initialization of addons
     private let initializationGroup = DispatchGroup()
-    
+
     // MARK: - Initialization
     private init() {
         do {
@@ -55,9 +55,9 @@ final class AddonManager: ObservableObject {
             loadingState = .failed(error)
         }
     }
-    
+
     // MARK: - Public Methods
-    
+
     /// Check if manager is ready
     var isReady: Bool {
         if case .loaded = loadingState {
@@ -65,22 +65,22 @@ final class AddonManager: ObservableObject {
         }
         return false
     }
-    
+
     /// Helper method to find addon by URL or ID
     private func findAddon(urlOrId: String) -> (service: StremioService, manifest: AddonManifest)? {
         // First try direct URL lookup
         if let addon = activeAddons[urlOrId] {
             return addon
         }
-        
+
         // If not found, try finding by ID
         return activeAddons.values.first { $0.manifest.id == urlOrId }
     }
-    
+
     func getAllActiveAddonIds() -> [String] {
         return activeManifests.map { $0.id }
     }
-    
+
     /// Add a new addon by URL (URL only, not ID)
     /// - Parameters:
     ///   - url: Base URL of the Stremio addon manifest
@@ -89,24 +89,24 @@ final class AddonManager: ObservableObject {
         let processedURL = url.hasSuffix("/manifest.json")
             ? String(url.dropLast("/manifest.json".count))
             : url
-        
+
         let descriptor = FetchDescriptor<StoredAddonURL>(
             predicate: #Predicate<StoredAddonURL> { addon in
                 addon.url == processedURL
             }
         )
-        
+
         let existingAddons = try modelContainer.mainContext.fetch(descriptor)
         guard existingAddons.isEmpty else {
             throw AddonManagerError.addonAlreadyExists
         }
-        
+
         // Get the current highest order
         let allAddons = try getStoredAddonURLs()
         let nextOrder = (allAddons.map { $0.order }.max() ?? -1) + 1
-        
+
         let service = StremioService(baseURL: url)
-        
+
         let manifest = try await withCheckedThrowingContinuation { continuation in
             service.getManifest { result in
                 switch result {
@@ -117,17 +117,17 @@ final class AddonManager: ObservableObject {
                 }
             }
         }
-        
+
         let storedURL = StoredAddonURL(url: url, order: nextOrder)
         modelContainer.mainContext.insert(storedURL)
         try modelContainer.mainContext.save()
-        
+
         activeAddons[url] = (service: service, manifest: manifest)
         await refreshActiveManifests()
-        
+
         return manifest
     }
-    
+
     /// Remove an addon by URL
     /// - Parameter url: Base URL of the Stremio addon to remove
     func removeAddon(url: String) async throws {
@@ -136,28 +136,28 @@ final class AddonManager: ObservableObject {
                 addon.url == url
             }
         )
-        
+
         let addonsToRemove = try modelContainer.mainContext.fetch(descriptor)
         for addon in addonsToRemove {
             modelContainer.mainContext.delete(addon)
         }
         try modelContainer.mainContext.save()
-        
+
         activeAddons.removeValue(forKey: url)
         await refreshActiveManifests()
     }
-    
+
     func refreshActiveManifests() async {
         do {
             let descriptor = FetchDescriptor<StoredAddonURL>(
                 sortBy: [SortDescriptor(\.order)]
             )
-            
+
             let storedURLs = try modelContainer.mainContext.fetch(descriptor)
             let activeURLs = storedURLs.filter { $0.isActive }
-            
+
             var newActiveAddons: [String: (service: StremioService, manifest: AddonManifest)] = [:]
-            
+
             for storedURL in activeURLs {
                 if let existing = activeAddons[storedURL.url] {
                     newActiveAddons[storedURL.url] = existing
@@ -167,31 +167,26 @@ final class AddonManager: ObservableObject {
                     }
                 }
             }
-            
+
             activeAddons = newActiveAddons
         } catch {
             print("Error refreshing manifests: \(error)")
         }
     }
-    
+
     /// Get all stored addon URLs
     /// - Returns: Array of StoredAddonURL objects
     func getStoredAddonURLs() throws -> [StoredAddonURL] {
         let descriptor = FetchDescriptor<StoredAddonURL>()
         return try modelContainer.mainContext.fetch(descriptor)
     }
-    
+
     /// Get all active addon manifests
     /// - Returns: Array of AddonManifest objects
     func getActiveManifests() -> [AddonManifest]? {
-        print("activeManifests")
-        print(activeManifests.map { item in
-            item.id
-        })
-        print("activeManifests")
         return activeManifests
     }
-    
+
     /// Toggle addon active state
     /// - Parameter url: Addon URL to toggle
     func toggleAddonState(url: String) async throws {
@@ -200,11 +195,11 @@ final class AddonManager: ObservableObject {
                 addon.url == url
             }
         )
-        
+
         if let addon = try modelContainer.mainContext.fetch(descriptor).first {
             addon.isActive.toggle()
             try modelContainer.mainContext.save()
-            
+
             if addon.isActive {
                 if await initializeAddon(for: url) {
                     await refreshActiveManifests()
@@ -215,7 +210,7 @@ final class AddonManager: ObservableObject {
             }
         }
     }
-    
+
     /// Get metadata for specific type and ID from an addon
     /// - Parameters:
     ///   - urlOrId: Addon URL or ID
@@ -225,7 +220,7 @@ final class AddonManager: ObservableObject {
         guard let addon = findAddon(urlOrId: urlOrId) else {
             throw StremioServiceError.manifestNotLoaded
         }
-        
+
         return try await withCheckedThrowingContinuation { continuation in
             addon.service.getMeta(type: type, id: id) { result in
                 switch result {
@@ -237,14 +232,14 @@ final class AddonManager: ObservableObject {
             }
         }
     }
-    
+
     /// Get manifest for a specific addon ID
     /// - Parameter id: The ID of the addon
     /// - Returns: AddonManifest if found, nil otherwise
     func getManifest(for id: String) -> AddonManifest? {
         return activeManifests.first { $0.id == id }
     }
-    
+
     /// Get streams for specific type and ID from an addon
     /// - Parameters:
     ///   - urlOrId: Addon URL or ID
@@ -254,7 +249,7 @@ final class AddonManager: ObservableObject {
         guard let addon = findAddon(urlOrId: urlOrId) else {
             throw StremioServiceError.manifestNotLoaded
         }
-        
+
         return try await withCheckedThrowingContinuation { continuation in
             addon.service.getStream(type: type, id: id) { result in
                 switch result {
@@ -266,7 +261,7 @@ final class AddonManager: ObservableObject {
             }
         }
     }
-    
+
     /// Get catalog items from an addon
     /// - Parameters:
     ///   - urlOrId: Addon URL or ID
@@ -277,7 +272,7 @@ final class AddonManager: ObservableObject {
         guard let addon = findAddon(urlOrId: urlOrId) else {
             throw StremioServiceError.manifestNotLoaded
         }
-        
+
         return try await withCheckedThrowingContinuation { continuation in
             addon.service.getCatalog(type: type, id: id, extra: extra) { result in
                 switch result {
@@ -289,7 +284,7 @@ final class AddonManager: ObservableObject {
             }
         }
     }
-    
+
     /// Reorder an addon to a new position
     /// - Parameters:
     ///   - fromIndex: Current index of the addon
@@ -298,93 +293,93 @@ final class AddonManager: ObservableObject {
         let descriptor = FetchDescriptor<StoredAddonURL>(
             sortBy: [SortDescriptor(\.order)]
         )
-        
+
         var addons = try modelContainer.mainContext.fetch(descriptor)
-        
+
         // Perform the reorder
         let addon = addons.remove(at: fromIndex)
         addons.insert(addon, at: toIndex)
-        
+
         // Update order values
         for (index, addon) in addons.enumerated() {
             addon.order = index
         }
-        
+
         // Save changes
         try modelContainer.mainContext.save()
-        
+
         // Refresh manifests to reflect new order
         await refreshActiveManifests()
     }
-    
-    
+
+
     /// Move addon up in the list
     /// - Parameter url: URL of the addon to move
     func moveAddonUp(_ url: String) async throws {
         let descriptor = FetchDescriptor<StoredAddonURL>(
             sortBy: [SortDescriptor(\.order)]
         )
-        
+
         let addons = try modelContainer.mainContext.fetch(descriptor)
         guard let currentIndex = addons.firstIndex(where: { $0.url == url }),
               currentIndex > 0 else {
             return
         }
-        
+
         try await reorderAddons(fromIndex: currentIndex, toIndex: currentIndex - 1)
     }
-    
+
     /// Move addon down in the list
     /// - Parameter url: URL of the addon to move
     func moveAddonDown(_ url: String) async throws {
         let descriptor = FetchDescriptor<StoredAddonURL>(
             sortBy: [SortDescriptor(\.order)]
         )
-        
+
         let addons = try modelContainer.mainContext.fetch(descriptor)
         guard let currentIndex = addons.firstIndex(where: { $0.url == url }),
               currentIndex < addons.count - 1 else {
             return
         }
-        
+
         try await reorderAddons(fromIndex: currentIndex, toIndex: currentIndex + 1)
     }
-    
+
     // MARK: - Private Methods
-    
+
     private func initializeStoredAddons() async {
         do {
             loadingState = .loading(progress: 0, total: 0)
-            
+
             let storedURLs = try getStoredAddonURLs()
             let activeURLs = storedURLs.filter { $0.isActive }
-            
+
             // Even if there are no active URLs, we should still transition to loaded state
             if activeURLs.isEmpty {
                 loadingState = .loaded
                 return
             }
-            
+
             var loadedCount = 0
             let totalCount = activeURLs.count
-            
+
             for storedURL in activeURLs {
                 if await initializeAddon(for: storedURL.url) {
                     loadedCount += 1
                 }
                 updateLoadingProgress(loaded: loadedCount, total: totalCount)
             }
-            
+
             await refreshActiveManifests()
-            
+
             // Ensure we transition to loaded state regardless of whether any addons were successfully loaded
             loadingState = .loaded
-            
+
         } catch {
             loadingState = .failed(error)
         }
     }
-    
+
     private func updateLoadingProgress(loaded: Int, total: Int) {
         guard total > 0 else {
             loadingState = .loading(progress: 1.0, total: 0)
@@ -393,11 +388,11 @@ final class AddonManager: ObservableObject {
         let progress = Double(loaded) / Double(total)
         loadingState = .loading(progress: progress, total: total)
     }
-    
-    
+
+
     private func initializeAddon(for url: String) async -> Bool {
         let service = StremioService(baseURL: url)
-        
+
         do {
             let manifest = try await withCheckedThrowingContinuation { continuation in
                 service.getManifest { result in
@@ -409,9 +404,9 @@ final class AddonManager: ObservableObject {
                     }
                 }
             }
-            
+
             activeAddons[url] = (service: service, manifest: manifest)
-            
+
             return true
         } catch {
             print("Error loading manifest for \(url): \(error)")

@@ -1,0 +1,54 @@
+name: Build iOS IPA
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    outputs:
+      ipa_path: ${{ steps.ipa_info.outputs.ipa_path }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build App
+        run: |
+          xcodebuild clean archive \
+            -scheme madari \
+            -sdk iphoneos \
+            -configuration Release \
+            -archivePath $GITHUB_WORKSPACE/madari.xcarchive \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            ENABLE_BITCODE=NO
+
+      - name: Create IPA
+        run: |
+          cd $GITHUB_WORKSPACE
+          
+          # Create Payload directory
+          mkdir -p Payload
+          
+          # Copy .app from archive to Payload directory
+          cp -r madari.xcarchive/Products/Applications/madari.app Payload/
+          
+          # Create IPA
+          zip -r madari.ipa Payload
+          
+          # Clean up
+          rm -rf Payload
+
+      - name: Get IPA Info
+        id: ipa_info
+        run: |
+          echo "ipa_path=$GITHUB_WORKSPACE/madari.ipa" >> $GITHUB_OUTPUT
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: madari-ios
+          path: madari.ipa
