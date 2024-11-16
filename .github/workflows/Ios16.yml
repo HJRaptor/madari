@@ -1,8 +1,32 @@
+name: Build iOS IPA
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-13 # Ensures compatibility with the latest Xcode supporting iOS 16
+    outputs:
+      ipa_path: ${{ steps.ipa_info.outputs.ipa_path }}
+
+    steps:
+      # Step 1: Checkout the code
+      - uses: actions/checkout@v4
+
+      # Step 2: Check Xcode version (optional for debugging purposes)
+      - name: Check Xcode Version
+        run: xcodebuild -version
+
+      # Step 3: Build the app
       - name: Build App
         run: |
           xcodebuild clean archive \
             -scheme madari \
-            -sdk iphoneos \ # Let Xcode choose the appropriate SDK
+            -sdk iphoneos \ # Use default iOS SDK
             -configuration Release \
             -archivePath $GITHUB_WORKSPACE/madari.xcarchive \
             CODE_SIGN_IDENTITY="" \
@@ -11,3 +35,33 @@
             ENABLE_BITCODE=NO \
             SUPPORTED_PLATFORMS="iphoneos" \
             IPHONEOS_DEPLOYMENT_TARGET="16.0" # Set deployment target to iOS 16
+
+      # Step 4: Create the IPA file
+      - name: Create IPA
+        run: |
+          cd $GITHUB_WORKSPACE
+
+          # Create Payload directory
+          mkdir -p Payload
+
+          # Copy .app from archive to Payload directory
+          cp -r madari.xcarchive/Products/Applications/madari.app Payload/
+
+          # Create IPA
+          zip -r madari.ipa Payload
+
+          # Clean up
+          rm -rf Payload
+
+      # Step 5: Get IPA info
+      - name: Get IPA Info
+        id: ipa_info
+        run: |
+          echo "ipa_path=$GITHUB_WORKSPACE/madari.ipa" >> $GITHUB_OUTPUT
+
+      # Step 6: Upload the IPA as an artifact
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: madari-ios
+          path: madari.ipa
